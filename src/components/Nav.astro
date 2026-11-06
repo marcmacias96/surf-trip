@@ -19,13 +19,13 @@ const links = [
 
 <a href="#main" class="skip-link">{t.nav.skip}</a>
 
-<header data-nav class="nav fixed inset-x-0 top-0 z-50 border-b">
+<header data-nav class="nav fixed inset-x-0 top-0 z-50 border-b border-line text-bone">
   <nav class="container-x flex h-20 items-center justify-between gap-6" aria-label="Main">
-    <a href="#top" class="font-display text-base font-extrabold uppercase tracking-[0.08em]">
+    <a href="#top" class="font-display text-lg font-extrabold uppercase tracking-[-0.02em]">
       Radical Marino
     </a>
 
-    <ul class="hidden items-center gap-8 lg:flex">
+    <ul class="hidden items-center gap-6 lg:flex">
       {
         links.map((link) => (
           <li>
@@ -38,14 +38,14 @@ const links = [
     </ul>
 
     <div class="flex items-center gap-4 md:gap-6">
-      <ul class="label flex items-center gap-2" aria-label={t.nav.switchLabel}>
+      <ul class="flex items-center gap-3" aria-label={t.nav.switchLabel}>
         {
           (Object.keys(languages) as Lang[]).map((code) => (
             <li>
               <a
                 href={getRelativeLocaleUrl(code)}
                 aria-current={code === lang ? 'page' : undefined}
-                class:list={['link-underline', code === lang ? 'opacity-100' : 'opacity-60']}
+                class:list={['link-underline', code === lang ? 'text-bone' : 'text-muted']}
               >
                 {languages[code]}
               </a>
@@ -53,7 +53,7 @@ const links = [
           ))
         }
       </ul>
-      <a href="#contact" class="btn-primary hidden md:inline-flex">{t.nav.cta}</a>
+      <a href="#contact" class="btn px-3 py-2 text-xs md:px-5 md:py-3 md:text-sm">{t.nav.cta}</a>
     </div>
   </nav>
 </header>

@@ -10,22 +10,17 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 ---
 
-<footer class="border-t border-line bg-sand py-10 text-sm text-ink-500">
-  <div class="container-x flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
-    <div>
-      <p class="font-display text-base font-extrabold uppercase tracking-[0.08em] text-navy">
-        Radical Marino
-      </p>
-      <p class="mt-1">{t.footer.hub}</p>
-    </div>
-    <ul class="label flex items-center gap-4 text-navy" aria-label={t.nav.switchLabel}>
+<footer class="mono border-t border-line py-8 text-muted">
+  <div class="container-x flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+    <p>{t.footer.smallPrint}</p>
+    <ul class="flex items-center gap-3" aria-label={t.nav.switchLabel}>
       {
         (Object.keys(languages) as Lang[]).map((code) => (
           <li>
             <a
               href={getRelativeLocaleUrl(code)}
               aria-current={code === lang ? 'page' : undefined}
-              class:list={['link-underline', code === lang ? 'opacity-100' : 'opacity-60']}
+              class:list={['link-underline', code === lang ? 'text-bone' : 'text-muted']}
             >
               {languages[code]}
             </a>
@@ -33,6 +28,6 @@ const t = useTranslations(lang);
         ))
       }
     </ul>
-    <p class="text-xs">{t.footer.smallPrint}</p>
+    <p>{t.footer.hub}</p>
   </div>
 </footer>

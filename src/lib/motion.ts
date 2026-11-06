@@ -10,6 +10,8 @@ CustomEase.create('outStrong', '0.23, 1, 0.32, 1');
 
 const q = <T extends Element = HTMLElement>(selector: string, root: ParentNode = document) =>
   root.querySelector<T>(selector);
+const all = (selector: string, root: ParentNode = document) =>
+  gsap.utils.toArray<HTMLElement>(selector, root);
 
 function startLenis() {
   const lenis = new Lenis({ autoRaf: false, anchors: { offset: -80 } });
@@ -31,10 +33,10 @@ function initNav() {
 function revealLines(lines: Element[], trigger?: Element) {
   gsap.to(lines, {
     y: 0,
-    duration: 1.1,
+    duration: 0.7,
     ease: 'outStrong',
-    stagger: 0.08,
-    delay: trigger ? 0 : 0.2,
+    stagger: 0.06,
+    delay: trigger ? 0 : 0.15,
     scrollTrigger: trigger ? { trigger, start: 'top 70%', once: true } : undefined,
   });
 }
@@ -42,22 +44,47 @@ function revealLines(lines: Element[], trigger?: Element) {
 function initHero() {
   const hero = q('[data-hero]');
   if (!hero) return;
-  revealLines(gsap.utils.toArray<Element>('[data-line]', hero));
+  revealLines(all('[data-line]', hero));
+
+  const img = q('[data-hero-img]', hero);
+  const pic = q('[data-hero-pic]', hero);
+  if (img && pic) {
+    gsap.from(img, { scale: 1.08, duration: 1.2, ease: 'outStrong' });
+    gsap.fromTo(
+      img,
+      { yPercent: -6 },
+      {
+        yPercent: 6,
+        ease: 'none',
+        scrollTrigger: { trigger: pic, start: 'top bottom', end: 'bottom top', scrub: true },
+      },
+    );
+  }
+
+  // Stickers keep their static tilt from CSS `rotate`; GSAP's rotation composes on top.
   gsap.fromTo(
-    q('[data-hero-img]', hero),
-    { yPercent: -10 },
-    {
-      yPercent: 10,
-      ease: 'none',
-      scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true },
-    },
+    all('[data-sticker]', hero),
+    { opacity: 0, scale: 0.6, rotation: -8 },
+    { opacity: 1, scale: 1, rotation: 0, duration: 0.5, ease: 'outStrong', stagger: 0.08, delay: 0.6 },
   );
+}
+
+function initStats() {
+  all('[data-count]').forEach((el) => {
+    gsap.from(el, {
+      textContent: 0,
+      snap: { textContent: 1 },
+      duration: 1.2,
+      ease: 'outStrong',
+      scrollTrigger: { trigger: el, start: 'top 85%', once: true },
+    });
+  });
 }
 
 function initManifesto() {
   const block = q('[data-manifesto]');
   if (!block) return;
-  gsap.to(gsap.utils.toArray<Element>('[data-word]', block), {
+  gsap.to(all('[data-word]', block), {
     opacity: 1,
     ease: 'none',
     stagger: 0.04,
@@ -65,35 +92,46 @@ function initManifesto() {
   });
 }
 
-function initRoute(): (() => void) | undefined {
+function initRoute(isDesktop: boolean): (() => void) | undefined {
   const section = q('[data-route]');
-  const track = q('[data-route-track]');
-  const progress = q('[data-route-progress]');
-  if (!section || !track || !progress) return;
+  if (!section) return;
 
-  section.classList.add('route--horizontal');
-  const distance = () => track.scrollWidth - window.innerWidth;
+  const table = q('[data-route-table]', section) ?? section;
+  const line = q('[data-route-line]', section);
+  if (line) {
+    gsap.to(line, {
+      scaleY: 1,
+      ease: 'none',
+      scrollTrigger: { trigger: table, start: 'top 70%', end: 'bottom 70%', scrub: true },
+    });
+  }
 
-  gsap
-    .timeline({
-      scrollTrigger: {
-        trigger: section,
-        start: 'top top',
-        end: () => `+=${distance()}`,
-        pin: true,
-        scrub: true,
-        invalidateOnRefresh: true,
-      },
-    })
-    .to(track, { x: () => -distance(), ease: 'none' }, 0)
-    .to(progress, { scaleX: 1, ease: 'none' }, 0);
+  // The sticky photo column only exists on desktop.
+  if (!isDesktop) return;
+  const rows = all('[data-stop]', section);
+  const images = all('[data-route-img]', section);
+  const setActive = (id: string) => {
+    rows.forEach((row) => row.classList.toggle('is-active', row.dataset.stop === id));
+    images.forEach((img) => img.classList.toggle('is-active', img.dataset.routeImg === id));
+  };
 
-  return () => section.classList.remove('route--horizontal');
+  const listeners = new AbortController();
+  rows.forEach((row) => {
+    const id = row.dataset.stop ?? '';
+    row.addEventListener('mouseenter', () => setActive(id), { signal: listeners.signal });
+    ScrollTrigger.create({
+      trigger: row,
+      start: 'top center',
+      end: 'bottom center',
+      onToggle: (self) => self.isActive && setActive(id),
+    });
+  });
+  return () => listeners.abort();
 }
 
 function initFadeUps() {
   const reveal = (batch: Element[]) =>
-    gsap.to(batch, { opacity: 1, y: 0, duration: 0.6, ease: 'outStrong', stagger: 0.06 });
+    gsap.to(batch, { opacity: 1, y: 0, duration: 0.5, ease: 'outStrong', stagger: 0.05 });
   ScrollTrigger.batch('[data-fade]', { start: 'top 85%', onEnter: reveal, onEnterBack: reveal });
 }
 
@@ -102,7 +140,7 @@ function initPilot() {
   if (!section) return;
   const scrollTrigger = { trigger: section, start: 'top 70%', end: 'bottom 70%', scrub: true };
   gsap.to(q('[data-pilot-line]', section), { scaleX: 1, scaleY: 1, ease: 'none', scrollTrigger });
-  gsap.to(gsap.utils.toArray<Element>('[data-pilot-dot]', section), {
+  gsap.to(all('[data-pilot-dot]', section), {
     opacity: 1,
     scale: 1,
     ease: 'none',
@@ -114,7 +152,7 @@ function initPilot() {
 function initContact() {
   const section = q('[data-contact]');
   if (!section) return;
-  revealLines(gsap.utils.toArray<Element>('[data-line]', section), section);
+  revealLines(all('[data-line]', section), section);
 }
 
 export function initMotion() {
@@ -138,11 +176,12 @@ export function initMotion() {
       if (reduceMotion) return;
 
       initHero();
+      initStats();
       initManifesto();
       initFadeUps();
       initPilot();
       initContact();
-      const cleanupRoute = isDesktop ? initRoute() : undefined;
+      const cleanupRoute = initRoute(isDesktop);
       return () => cleanupRoute?.();
     },
   );

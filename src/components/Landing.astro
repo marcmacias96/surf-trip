@@ -2,9 +2,10 @@
 import type { Lang } from '../i18n/ui';
 import Nav from './Nav.astro';
 import Hero from './Hero.astro';
+import Marquee from './Marquee.astro';
+import Stats from './Stats.astro';
 import Manifesto from './Manifesto.astro';
 import Route from './Route.astro';
-import Marquee from './Marquee.astro';
 import Experiences from './Experiences.astro';
 import Partners from './Partners.astro';
 import Pilot from './Pilot.astro';
@@ -21,9 +22,10 @@ const { lang } = Astro.props;
 <Nav lang={lang} />
 <main id="main">
   <Hero lang={lang} />
+  <Marquee lang={lang} />
+  <Stats lang={lang} />
   <Manifesto lang={lang} />
   <Route lang={lang} />
-  <Marquee lang={lang} />
   <Experiences lang={lang} />
   <Partners lang={lang} />
   <Pilot lang={lang} />

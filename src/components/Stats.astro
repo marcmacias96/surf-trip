@@ -1,0 +1,25 @@
+---
+import { useTranslations, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<section class="container-x">
+  <ul class="grid border-b border-line md:grid-cols-3">
+    {
+      t.stats.map((stat) => (
+        <li class="border-b border-line py-10 md:border-b-0 md:border-r md:pr-6 md:last:border-r-0">
+          <p class="display text-[clamp(2.6rem,6vw,5.5rem)] leading-none">
+            <em data-count class="not-italic text-orange">{stat.value}</em> {stat.unit}
+          </p>
+          <p data-fade class="mono mt-3 text-muted">{stat.caption}</p>
+        </li>
+      ))
+    }
+  </ul>
+</section>

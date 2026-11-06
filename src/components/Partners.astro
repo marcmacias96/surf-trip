@@ -9,23 +9,27 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 ---
 
-<section id="partners" class="section-y bg-navy text-sand" aria-labelledby="partners-title">
+<section id="partners" class="section-y bg-bone text-asphalt" aria-labelledby="partners-title">
   <div class="container-x">
-    <p class="label text-sun">{t.partners.label}</p>
-    <h2 id="partners-title" class="display mt-3 text-[clamp(2rem,5vw,4.5rem)]">
+    <p class="mono text-orange">{t.partners.label}</p>
+    <h2 id="partners-title" data-fade class="display mt-5 text-[clamp(2.4rem,5.5vw,5rem)]">
       {t.partners.title}
     </h2>
-    <p class="mt-4 max-w-xl text-sand/80">{t.partners.intro}</p>
+    <p class="mt-5 max-w-xl text-asphalt/70">{t.partners.intro}</p>
 
-    <div class="mt-14 grid gap-px bg-sand/15 md:grid-cols-2">
+    <div class="mt-12 grid border-t border-line-light md:grid-cols-2">
       {
-        t.partners.areas.map((area) => (
-          <article data-fade class="bg-navy p-6 md:p-10">
-            <h3 class="label text-sun">{area.title}</h3>
-            <ul class="mt-6 space-y-3">
+        t.partners.areas.map((area, index) => (
+          <article
+            data-fade
+            class="border-b border-line-light py-8 md:odd:border-r md:odd:pr-10 md:even:pl-10"
+          >
+            <p class="mono text-orange">{String(index + 1).padStart(2, '0')}</p>
+            <h3 class="mono mt-2 text-sm font-bold">{area.title}</h3>
+            <ul class="mt-5 space-y-2">
               {area.items.map((item) => (
                 <li class="flex items-baseline gap-3">
-                  <span class="h-px w-4 shrink-0 translate-y-[-0.25em] bg-sand/50" aria-hidden="true" />
+                  <span class="h-px w-4 shrink-0 -translate-y-[0.25em] bg-asphalt/50" aria-hidden="true" />
                   <span>{item}</span>
                 </li>
               ))}

@@ -7,53 +7,66 @@ interface Props {
 
 const { lang } = Astro.props;
 const t = useTranslations(lang);
+const stickerClasses = [
+  '-top-4 left-[6%] -rotate-6',
+  'top-10 right-[5%] rotate-3 bg-orange',
+  'bottom-7 left-[10%] rotate-2 bg-sea',
+];
 ---
 
-<section
-  id="top"
-  data-hero
-  class="relative flex min-h-svh items-end overflow-hidden bg-navy text-sand"
-  aria-labelledby="hero-title"
->
-  <img
-    data-hero-img
-    data-asset-slot="hero"
-    src={t.hero.image.src}
-    alt={t.hero.image.alt}
-    width="1600"
-    height="1067"
-    loading="eager"
-    fetchpriority="high"
-    class="absolute inset-x-0 -top-[15%] h-[130%] w-full object-cover"
-  />
-  <div class="absolute inset-0 bg-gradient-to-t from-navy via-navy/55 to-navy/10" aria-hidden="true"></div>
-  <div class="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-navy/70 to-transparent" aria-hidden="true"></div>
+<section id="top" data-hero class="overflow-hidden pt-32 lg:pt-40" aria-labelledby="hero-title">
+  <div class="container-x">
+    <p class="mono mb-5 text-orange">{t.hero.label}</p>
+    <h1 id="hero-title" class="display text-[clamp(4.2rem,13.5vw,15rem)] leading-[0.82]">
+      <span class="block">
+        <span class="inline-block overflow-hidden align-top">
+          <span data-line class="ghost inline-block text-bone">{t.hero.title.ghost}</span>
+        </span>
+        {' '}
+        <span class="inline-block overflow-hidden align-top">
+          <span data-line class="inline-block">{t.hero.title.line1}</span>
+        </span>
+      </span>
+      <span class="block">
+        <span class="inline-block overflow-hidden align-top">
+          <span data-line class="inline-block">
+            {t.hero.title.line2}<span class="text-orange">.</span>
+          </span>
+        </span>
+      </span>
+    </h1>
 
-  <div class="container-x relative pb-24 pt-40 lg:pb-32">
-    <p class="label mb-6 text-sun">{t.hero.label}</p>
-    <h1 id="hero-title" class="display text-[clamp(2.25rem,6.2vw,5.5rem)]">
+    <ul class="mono mt-7 flex flex-wrap gap-x-8 gap-y-2 text-muted-light">
       {
-        t.hero.lines.map((line, index) => (
-          <span class="block overflow-hidden">
-            <span data-line class:list={['block', index === 1 && 'font-light']}>
-              {line}
-            </span>
+        t.hero.subLines.map((line, index) => (
+          <li data-fade>
+            {String(index + 1).padStart(2, '0')} — {line}
+          </li>
+        ))
+      }
+    </ul>
+
+    <div data-hero-pic class="relative mt-10">
+      <div class="h-[68vh] min-h-[420px] overflow-hidden">
+        <img
+          data-hero-img
+          data-asset-slot="hero"
+          src={t.hero.image.src}
+          alt={t.hero.image.alt}
+          width={t.hero.image.width}
+          height={t.hero.image.height}
+          loading="eager"
+          fetchpriority="high"
+          class="relative top-[-7.5%] block h-[115%] w-full object-cover"
+        />
+      </div>
+      {
+        t.hero.stickers.map((text, index) => (
+          <span data-sticker class:list={['tag', stickerClasses[index]]} aria-hidden="true">
+            {text}
           </span>
         ))
       }
-    </h1>
-    <div class="mt-10 flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
-      <p data-fade class="max-w-md text-base text-sand/80 md:text-lg">{t.hero.intro}</p>
-      <a data-fade href="#contact" class="btn-primary self-start">{t.hero.cta}</a>
     </div>
   </div>
-
-  <a
-    data-scroll-cue
-    href="#manifesto"
-    class="label absolute bottom-6 left-1/2 hidden -translate-x-1/2 items-center gap-2 text-sand/70 md:flex"
-  >
-    {t.hero.scroll}
-    <span class="block h-8 w-px bg-sand/50" aria-hidden="true"></span>
-  </a>
 </section>

@@ -7,19 +7,15 @@ interface Props {
 
 const { lang } = Astro.props;
 const t = useTranslations(lang);
-const names = t.route.stops.map((stop) => stop.name);
 ---
 
-<div class="overflow-hidden border-y border-line bg-sand py-4" aria-hidden="true">
+<div class="strip" aria-hidden="true">
   <div class="marquee-track flex w-max">
     {
       [0, 1].map(() => (
-        <ul class="flex shrink-0 items-center font-display text-sm font-bold uppercase tracking-[0.08em]">
-          {names.map((name) => (
-            <li class="flex items-center">
-              <span class="px-6">{name}</span>
-              <span class="text-ocean">·</span>
-            </li>
+        <ul class="flex shrink-0 items-center whitespace-nowrap">
+          {t.strip.map((name) => (
+            <li class="pr-5">{name} →</li>
           ))}
         </ul>
       ))

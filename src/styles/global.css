@@ -1,20 +1,18 @@
 @import "tailwindcss";
 
 @theme {
-  --color-sand: #f7f4ee;
-  --color-navy: #0b1f2e;
-  --color-ocean: #005aa0;
-  --color-sun: #ffd040;
-  --color-ink-700: #424242;
-  --color-ink-500: #616161;
-  --color-ink-300: #bdbdbd;
-  --color-line: #e6e1d8;
+  --color-asphalt: #141414;
+  --color-bone: #efe8d8;
+  --color-orange: #ff5a1f;
+  --color-sea: #15a3a3;
+  --color-line: #2a2a2a;
+  --color-line-light: #d8cfbb;
+  --color-dash: #444444;
+  --color-muted: #8e877a;
+  --color-muted-light: #b9b2a3;
 
-  --font-display: "Archivo", "Arial Narrow", sans-serif;
-  --font-body: "Inter", system-ui, sans-serif;
-
-  --radius-tile: 2px;
-  --radius-card: 4px;
+  --font-display: "Bricolage Grotesque", system-ui, sans-serif;
+  --font-mono: "Space Mono", ui-monospace, monospace;
 
   --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
 }
@@ -26,59 +24,62 @@
   }
 
   body {
-    @apply bg-sand font-body text-navy antialiased;
-  }
-
-  h1,
-  h2,
-  h3 {
-    @apply font-display font-bold uppercase;
+    @apply bg-asphalt font-display text-bone antialiased;
+    font-size: 17px;
+    line-height: 1.5;
   }
 
   :focus-visible {
-    @apply outline-2 outline-offset-2 outline-ocean;
+    @apply outline-2 outline-offset-2 outline-orange;
   }
 
   ::selection {
-    @apply bg-sun text-navy;
+    @apply bg-orange text-asphalt;
   }
 }
 
 @layer components {
   .container-x {
-    @apply mx-auto w-full max-w-[1440px] px-6 md:px-12 xl:px-20;
+    @apply mx-auto w-full max-w-[1400px] px-[clamp(20px,4vw,56px)];
   }
 
   .section-y {
-    @apply py-24 lg:py-40;
+    @apply py-24 lg:py-[120px];
   }
 
-  .label {
-    @apply font-body text-xs font-medium uppercase tracking-[0.08em];
+  .mono {
+    @apply font-mono text-xs uppercase tracking-[0.06em];
   }
 
   .display {
-    @apply font-display font-extrabold uppercase leading-[0.95] tracking-[-0.02em];
-    font-stretch: 125%;
+    @apply font-display font-extrabold uppercase leading-[0.86] tracking-[-0.04em];
+    font-variation-settings: "opsz" 96;
   }
 
-  .btn-primary {
-    @apply inline-flex items-center justify-center rounded-tile bg-sun px-6 py-3 font-display text-sm font-bold uppercase tracking-[0.08em] text-navy;
+  /* Outline text. Keeps `color` for the stroke, so pair it with any text color class. */
+  .ghost {
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke: 2px currentColor;
+  }
+
+  .btn {
+    @apply inline-block bg-orange px-5 py-3 font-display text-sm font-extrabold uppercase tracking-[0.02em] text-asphalt;
+    transform: rotate(-1.5deg);
     transition: transform 160ms var(--ease-out-strong);
   }
 
   @media (hover: hover) and (pointer: fine) {
-    .btn-primary:hover {
-      transform: translateY(-2px);
+    .btn:hover {
+      transform: rotate(0) scale(1.03);
     }
   }
 
-  .btn-primary:active {
-    transform: translateY(0);
+  .btn:active {
+    transform: rotate(0) scale(0.98);
   }
 
   .link-underline {
-    @apply relative inline-block font-display text-sm font-bold uppercase tracking-[0.08em];
+    @apply relative inline-block font-mono text-xs uppercase tracking-[0.06em];
   }
 
   .link-underline::after {
@@ -94,21 +95,27 @@
     }
   }
 
-  .link-underline:focus-visible::after {
+  .link-underline:focus-visible::after,
+  .link-underline[aria-current]::after {
     transform: scaleX(1);
   }
 
+  .tag {
+    @apply absolute bg-bone px-3 py-2 font-mono text-xs font-bold uppercase tracking-[0.06em] text-asphalt;
+  }
+
+  .strip {
+    @apply overflow-hidden border-y-4 border-bone bg-orange py-3 text-[22px] font-extrabold uppercase text-asphalt;
+  }
+
   .skip-link {
-    @apply fixed top-2 left-2 z-[100] -translate-y-24 rounded-tile bg-navy px-4 py-2 text-sm font-medium text-sand;
+    @apply fixed left-2 top-2 z-[100] bg-orange px-4 py-2 font-mono text-xs uppercase tracking-[0.06em] text-asphalt;
+    transform: translateY(-150%);
     transition: transform 160ms var(--ease-out-strong);
   }
 
   .skip-link:focus-visible {
-    transform: translateY(0);
-  }
-
-  .tile {
-    @apply rounded-card border border-line bg-sand;
+    transform: none;
   }
 }
 
@@ -120,7 +127,7 @@
 }
 
 .marquee-track {
-  animation: marquee 40s linear infinite;
+  animation: marquee 32s linear infinite;
 }
 
 /* Initial states for GSAP. Applied only when JS ran (html.js), so the page is
@@ -131,11 +138,15 @@
 
 .js [data-fade] {
   opacity: 0;
-  transform: translateY(24px);
+  transform: translateY(16px);
 }
 
 .js [data-word] {
   opacity: 0.2;
+}
+
+.js [data-sticker] {
+  opacity: 0;
 }
 
 .js [data-pilot-dot] {
@@ -155,72 +166,51 @@
   }
 }
 
-/* Route: the horizontal track is enabled by JS only on desktop without reduced
-   motion (.route--horizontal). The default is a stacked card list at every width. */
-.route--horizontal {
-  height: 100vh;
-  overflow: hidden;
+.js [data-route-line] {
+  transform: scaleY(0);
+  transform-origin: top;
 }
 
-.route--horizontal [data-route-head] {
-  @apply absolute inset-x-0 top-0 z-10 pt-28;
+/* Route: stacked stop photos in the sticky column; the active one crossfades in.
+   Driven by a class toggle, so a CSS transition retargets cleanly on fast scroll. */
+[data-route-img] {
+  opacity: 0;
+  transform: scale(1.06);
+  transition:
+    opacity 500ms var(--ease-out-strong),
+    transform 500ms var(--ease-out-strong);
 }
 
-.route--horizontal [data-route-head] h2 {
-  @apply max-w-[50%] text-[clamp(1.5rem,3vw,2.5rem)];
+[data-route-img].is-active {
+  opacity: 1;
+  transform: none;
 }
 
-.route--horizontal [data-route-intro] {
-  display: none;
+[data-stop].is-active {
+  @apply bg-line/50;
 }
 
-.route--horizontal [data-route-track] {
-  @apply m-0 flex max-w-none gap-0 p-0;
-  width: max-content;
-}
-
-.route--horizontal [data-route-panel] {
-  @apply h-screen w-screen flex-none rounded-none border-0 bg-transparent;
-}
-
-.route--horizontal [data-route-panel] h3 {
-  @apply text-[clamp(2rem,5vw,4.5rem)];
-}
-
-.route--horizontal [data-route-copy] {
-  @apply pb-16 pl-12 pt-40 xl:pl-20;
-}
-
-.route--horizontal [data-route-progress] {
-  display: block;
-}
-
-[data-route-progress] {
-  display: none;
-  transform: scaleX(0);
-  transform-origin: left;
+@media (hover: hover) and (pointer: fine) {
+  [data-stop]:hover {
+    @apply bg-line/50;
+  }
 }
 
 .nav {
-  transition:
-    background-color 240ms var(--ease-out-strong),
-    border-color 240ms var(--ease-out-strong),
-    color 240ms var(--ease-out-strong);
+  transition: background-color 240ms var(--ease-out-strong);
 }
 
 .nav.is-scrolled {
-  @apply border-line bg-sand text-navy;
-}
-
-.nav:not(.is-scrolled) {
-  @apply border-transparent text-sand;
+  @apply bg-asphalt;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .js [data-line],
   .js [data-fade],
+  .js [data-sticker],
   .js [data-pilot-dot],
-  .js [data-pilot-line] {
+  .js [data-pilot-line],
+  .js [data-route-line] {
     transform: none;
     opacity: 1;
   }
@@ -233,13 +223,11 @@
     animation-play-state: paused;
   }
 
-  .btn-primary,
+  .btn,
   .link-underline::after,
-  .skip-link {
+  .skip-link,
+  .nav,
+  [data-route-img] {
     transition-duration: 1ms;
-  }
-
-  [data-scroll-cue] {
-    animation: none;
   }
 }

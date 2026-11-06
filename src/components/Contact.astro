@@ -11,24 +11,21 @@ const t = useTranslations(lang);
 const email = 'hello@radicalmarino.com';
 ---
 
-<section id="contact" data-contact class="section-y bg-sand" aria-labelledby="contact-title">
+<section id="contact" data-contact class="section-y border-t border-line" aria-labelledby="contact-title">
   <div class="container-x">
-    <p class="label text-ocean">{t.contact.label}</p>
-    <h2 id="contact-title" class="display mt-6 text-[clamp(2rem,5.5vw,5rem)]">
-      {
-        t.contact.lines.map((line, index) => (
-          <span class="block overflow-hidden">
-            <span data-line class:list={['block', index === 1 && 'font-light']}>
-              {line}
-            </span>
-          </span>
-        ))
-      }
+    <p class="mono text-orange">{t.contact.label}</p>
+    <h2 id="contact-title" class="display mt-5 text-[clamp(3rem,10vw,10rem)] leading-[0.85]">
+      <span class="block overflow-hidden">
+        <span data-line class="block">{t.contact.title.solid}</span>
+      </span>
+      <span class="block overflow-hidden">
+        <span data-line class="ghost block text-bone">{t.contact.title.ghost}</span>
+      </span>
     </h2>
-    <p data-fade class="mt-10 max-w-xl text-lg text-ink-700">{t.contact.text}</p>
+    <p data-fade class="mt-10 max-w-xl text-lg text-muted-light">{t.contact.text}</p>
     <div data-fade class="mt-10 flex flex-wrap items-center gap-8">
-      <a href={`mailto:${email}`} class="btn-primary">{t.contact.cta}</a>
-      <a href="#top" class="link-underline text-ocean">{t.contact.secondary}</a>
+      <a href={`mailto:${email}`} class="btn">{t.contact.cta}</a>
+      <a href="#top" class="link-underline">{t.contact.secondary}</a>
     </div>
   </div>
 </section>

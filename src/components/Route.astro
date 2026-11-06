@@ -7,43 +7,83 @@ interface Props {
 
 const { lang } = Astro.props;
 const t = useTranslations(lang);
+const cell = 'border-b border-dashed border-dash py-5';
 ---
 
-<section id="route" data-route class="relative bg-sand" aria-labelledby="route-title">
-  <div data-route-head class="container-x pt-24 lg:pt-40">
-    <p class="label text-ocean">{t.route.label}</p>
-    <h2 id="route-title" class="display mt-3 text-[clamp(2rem,5vw,4.5rem)]">{t.route.title}</h2>
-    <p data-route-intro class="mt-4 max-w-xl text-ink-700">{t.route.intro}</p>
-  </div>
+<section id="route" data-route class="section-y border-t border-line" aria-labelledby="route-title">
+  <div class="container-x">
+    <p class="mono text-orange">{t.route.label}</p>
+    <h2 id="route-title" data-fade class="display mt-5 text-[clamp(2.4rem,5.5vw,5rem)]">
+      {t.route.title}
+    </h2>
 
-  <ol data-route-track class="container-x mt-14 grid gap-6 pb-24 lg:pb-40">
-    {
-      t.route.stops.map((stop, index) => (
-        <li data-route-panel class="tile grid overflow-hidden md:grid-cols-2">
-          <div data-route-copy class="order-2 flex flex-col justify-end p-6 md:order-1 md:p-10">
-            <span class="display block text-[clamp(4rem,12vw,11rem)] leading-none text-ocean/20">
-              {String(index + 1).padStart(2, '0')}
+    <div class="mt-12 lg:grid lg:grid-cols-[3fr_2fr] lg:items-start lg:gap-12">
+      <div class="relative pl-6 md:pl-8">
+        <div
+          data-route-line
+          class="absolute inset-y-0 left-0 border-l border-dashed border-muted"
+          aria-hidden="true"
+        >
+        </div>
+
+        <div data-route-table role="table" class="mono w-full">
+          <div role="row" class="grid grid-cols-[3.5rem_1fr_auto] md:grid-cols-[4rem_1.4fr_1fr_auto]">
+            <span role="columnheader" class={`${cell} py-0 pb-3 text-muted`}>{t.route.headers.index}</span>
+            <span role="columnheader" class={`${cell} py-0 pb-3 text-muted`}>{t.route.headers.stop}</span>
+            <span role="columnheader" class={`${cell} hidden py-0 pb-3 text-muted md:block`}>
+              {t.route.headers.info}
             </span>
-            <h3 class="display mt-2 text-[clamp(1.75rem,3.5vw,3.5rem)]">{stop.name}</h3>
-            <p class="label mt-3 text-ocean">{stop.tag}</p>
-            <p class="mt-6 max-w-md text-ink-700">{stop.description}</p>
-            <p class="label mt-8 text-ink-500">
-              {t.route.distanceLabel}: <span class="text-navy">{stop.distance}</span>
-            </p>
+            <span role="columnheader" class={`${cell} py-0 pb-3 text-right text-muted`}>
+              {t.route.headers.distance}
+            </span>
           </div>
-          <img
-            data-asset-slot={`route-${stop.id}`}
-            src={stop.image}
-            alt={stop.alt}
-            width="1600"
-            height="1067"
-            loading="lazy"
-            class="order-1 aspect-[4/3] w-full object-cover md:order-2 md:aspect-auto md:h-full"
-          />
-        </li>
-      ))
-    }
-  </ol>
+          {
+            t.route.stops.map((stop, index) => (
+              <div
+                role="row"
+                data-stop={stop.id}
+                data-fade
+                class="grid grid-cols-[3.5rem_1fr_auto] items-center md:grid-cols-[4rem_1.4fr_1fr_auto]"
+              >
+                <span role="cell" class={`${cell} font-bold text-orange`}>
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+                <span
+                  role="cell"
+                  class={`${cell} display text-[clamp(1.4rem,2.6vw,2.4rem)] tracking-[-0.02em]`}
+                >
+                  {stop.name}
+                </span>
+                <span role="cell" class={`${cell} hidden pr-6 text-muted-light md:block`}>
+                  {stop.info}
+                </span>
+                <span role="cell" class={`${cell} whitespace-nowrap text-right`}>
+                  {stop.distance}
+                </span>
+              </div>
+            ))
+          }
+        </div>
+      </div>
 
-  <div data-route-progress class="absolute inset-x-0 bottom-0 h-1 bg-sun" aria-hidden="true"></div>
+      <div class="hidden lg:block">
+        <div class="sticky top-24 aspect-[4/5] overflow-hidden bg-line">
+          {
+            t.route.stops.map((stop, index) => (
+              <img
+                data-route-img={stop.id}
+                data-asset-slot={`route-${stop.id}`}
+                src={stop.image}
+                alt={stop.alt}
+                width={stop.width}
+                height={stop.height}
+                loading="lazy"
+                class:list={['absolute inset-0 h-full w-full object-cover', index === 0 && 'is-active']}
+              />
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </div>
 </section>

@@ -6,6 +6,7 @@ export interface Stop {
   id: string;
   name: string;
   tag: string;
+  info: string;
   description: string;
   distance: string;
   image: string;
@@ -28,6 +29,12 @@ interface PartnerArea {
   items: string[];
 }
 
+interface Stat {
+  value: string;
+  unit: string;
+  caption: string;
+}
+
 interface Copy {
   meta: { title: string; description: string };
   nav: {
@@ -42,19 +49,32 @@ interface Copy {
   };
   hero: {
     label: string;
+    title: { ghost: string; line1: string; line2: string };
     lines: [string, string, string];
+    subLines: [string, string, string];
+    stickers: [string, string, string];
     intro: string;
     cta: string;
     scroll: string;
     image: ImageSlot;
   };
-  manifesto: { label: string; text: string };
+  strip: string[];
+  stats: [Stat, Stat, Stat];
+  manifesto: { label: string; title: { solid: string; accent: string }; text: string };
   route: {
     label: string;
     title: string;
     intro: string;
     distanceLabel: string;
+    headers: { index: string; stop: string; info: string; distance: string };
     stops: Stop[];
+  };
+  transport: {
+    label: string;
+    lines: [string, string];
+    bullets: string[];
+    cta: string;
+    image: ImageSlot;
   };
   experiences: {
     label: string;
@@ -75,6 +95,7 @@ interface Copy {
   };
   contact: {
     label: string;
+    title: { solid: string; ghost: string };
     lines: [string, string];
     text: string;
     cta: string;
@@ -87,16 +108,19 @@ const unsplash = (id: string) =>
   `https://images.unsplash.com/${id}?auto=format&fit=crop&w=1600&q=70`;
 
 const images = {
-  hero: unsplash('photo-1502933691298-84fc14542831'),
-  manta: unsplash('photo-1507525428034-b723cf961d3e'),
+  heroTruck: '/images/truck-ayampe-sunset.jpg',
+  transportTruck: '/images/truck-coast-overlook.jpg',
+  manta: '/images/truck-manta-towers.jpg',
   santaMarianita: unsplash('photo-1500375592092-40eb2168fd21'),
-  sanMateo: unsplash('photo-1519046904884-53103b34b206'),
+  sanMateo: '/images/truck-hill-lighthouse.jpg',
   puertoCayo: unsplash('photo-1505118380757-91f5f5632de0'),
   ayampe: unsplash('photo-1509914398892-963f53e6e2f1'),
   montanita: unsplash('photo-1455729552865-3658a5d39692'),
   custom: unsplash('photo-1502680390469-be75c86b636f'),
   group: unsplash('photo-1455264745730-cb3b76250ae8'),
 };
+
+const stripStops = ['Manta', 'Santa Marianita', 'San Mateo', 'Puerto Cayo', 'Ayampe', 'Montañita', 'Olón'];
 
 export const ui: Record<Lang, Copy> = {
   en: {
@@ -107,28 +131,40 @@ export const ui: Record<Lang, Copy> = {
     },
     nav: {
       route: 'Route',
-      experiences: 'Experiences',
+      experiences: 'Transport',
       partners: 'Partners',
       pilot: 'Pilot',
       contact: 'Contact',
-      cta: 'Plan your trip',
+      cta: 'Get in the van',
       switchLabel: 'Language',
       skip: 'Skip to content',
     },
     hero: {
-      label: 'Surf trips · Manta, Ecuador',
+      label: 'Surf trips · Manta, Ecuador · Boards on the roof',
+      title: { ghost: 'Find', line1: 'your', line2: 'wave' },
       lines: ['Discover Ecuador.', 'Find your wave.', 'Live the experience.'],
+      subLines: ['6 stops, 145 km of coast', 'up to 4 surfers per trip', 'we drive, you surf'],
+      stickers: ['Depart Manta 05:30', 'Radical', 'Boards · Wax · Fuel'],
       intro:
         'Small-group surf trips along the Pacific coast of Manabí. We handle the logistics. You surf.',
-      cta: 'Plan your trip',
+      cta: 'Get in the van',
       scroll: 'Scroll',
       image: {
-        src: images.hero,
-        alt: 'Surfer riding a wave at sunset on the Pacific coast',
+        src: images.heroTruck,
+        alt: 'Radical Marino double-cab truck with board rack, side profile on the beach at sunset in Ayampe',
+        width: 1920,
+        height: 1279,
       },
     },
+    strip: stripStops,
+    stats: [
+      { value: '6', unit: 'stops', caption: 'One base. One road.' },
+      { value: '145', unit: 'km', caption: 'Manta to Olón, approx.' },
+      { value: '4', unit: 'max', caption: 'Surfers per departure' },
+    ],
     manifesto: {
       label: 'Why we do this',
+      title: { solid: 'The route is the', accent: 'trip.' },
       text: 'A surf trip with us is more than a route. It is the ocean, the villages and the people of Manabí, lived at the pace of the tide. We connect surfers with the coast of Ecuador through real experiences: sessions at local breaks, nights in small towns, food from the sea and roads that follow the shoreline. Everything is organized so that the only thing you have to think about is the next wave.',
     },
     route: {
@@ -137,71 +173,107 @@ export const ui: Record<Lang, Copy> = {
       intro:
         'Every trip starts in Manta, our logistics hub. From there we move south, beach by beach, with boards, rooms and sessions already arranged.',
       distanceLabel: 'From Manta',
+      headers: { index: '#', stop: 'Stop', info: "What's there", distance: 'From Manta (approx.)' },
       stops: [
         {
           id: 'manta',
           name: 'Manta',
           tag: 'Hub and departure point',
+          info: 'Logistics hub · departure',
           description:
             'The port city where every trip begins. Airport, boards, vehicles and the team meet here before heading down the coast.',
-          distance: 'Logistics hub',
+          distance: '0 km',
           image: images.manta,
-          alt: 'Wide beach and calm sea near a port city',
+          alt: 'Radical Marino double-cab truck with board rack in front of the Manta skyline',
+          width: 1920,
+          height: 1080,
         },
         {
           id: 'santa-marianita',
           name: 'Santa Marianita',
           tag: 'Water sports, coastal vibe',
+          info: 'Wind, water sports',
           description:
             'A long open beach known for wind and water sports. A first session to settle in and read the conditions.',
-          distance: 'approx. 20 km',
+          distance: '20 km',
           image: images.santaMarianita,
           alt: 'Ocean wave breaking under a clear sky',
+          width: 1600,
+          height: 1067,
         },
         {
           id: 'san-mateo',
           name: 'San Mateo',
           tag: 'Local culture, surf heritage',
+          info: 'Point break · fishing village',
           description:
             'A fishing village with a long surf history. Point break, local lineup and a community that lives from the sea.',
-          distance: 'approx. 12 km',
+          distance: '12 km',
           image: images.sanMateo,
-          alt: 'Palm trees on a quiet beach by a fishing village',
+          alt: 'Radical Marino double-cab truck with board rack on a hill by the San Mateo lighthouse',
+          width: 1080,
+          height: 1920,
         },
         {
           id: 'puerto-cayo',
           name: 'Puerto Cayo',
           tag: 'Nature, calm, beaches',
+          info: 'Quiet beaches · nature',
           description:
             'Slow mornings and empty beaches. Space to rest, surf uncrowded waves and watch the coast change.',
-          distance: 'approx. 70 km',
+          distance: '70 km',
           image: images.puertoCayo,
           alt: 'Clear blue water along a calm shoreline',
+          width: 1600,
+          height: 1067,
         },
         {
           id: 'ayampe',
           name: 'Ayampe',
           tag: 'Nature, relaxed, surf culture',
+          info: 'Beach break · surf town',
           description:
             'A small town surrounded by forest and a consistent beach break. Relaxed surf culture and a close community.',
-          distance: 'approx. 110 km',
+          distance: '110 km',
           image: images.ayampe,
           alt: 'Surfer walking with a board toward the ocean',
+          width: 1600,
+          height: 1067,
         },
         {
           id: 'montanita-olon',
-          name: 'Montañita & Olón',
+          name: 'Montañita / Olón',
           tag: 'Internationally known, lively',
+          info: 'Point + long beach · nightlife',
           description:
             'The best-known surf towns in Ecuador. A lively point break in Montañita and a long, open beach in Olón to close the trip.',
-          distance: 'approx. 140–145 km',
+          distance: '140–145 km',
           image: images.montanita,
           alt: 'Surfers in the water at a busy beach town',
+          width: 1600,
+          height: 1067,
         },
       ],
     },
+    transport: {
+      label: 'Transport & logistics',
+      lines: ['We drive.', 'You surf.'],
+      bullets: [
+        'Truck, boards and gear from the Manta hub',
+        'Routes change with the swell, not the schedule',
+        'Private or shared rooms, full board',
+        'Local instructors and crew on every stop',
+      ],
+      cta: 'Plan your trip',
+      image: {
+        src: images.transportTruck,
+        alt: 'Radical Marino double-cab truck with board rack parked at a coastal overlook',
+        width: 1080,
+        height: 1920,
+      },
+    },
     experiences: {
-      label: 'Experiences',
+      label: 'Trips',
       title: 'Two ways to travel',
       intro:
         'Pick a trip built around you, or join a pre-organized itinerary. Either way, the group stays small.',
@@ -214,6 +286,8 @@ export const ui: Record<Lang, Copy> = {
           image: {
             src: images.custom,
             alt: 'Surfboards lined up on the sand',
+            width: 1600,
+            height: 1067,
           },
         },
         {
@@ -223,6 +297,8 @@ export const ui: Record<Lang, Copy> = {
           image: {
             src: images.group,
             alt: 'Group of surfers watching the waves from the beach',
+            width: 1600,
+            height: 1067,
           },
         },
       ],
@@ -296,15 +372,16 @@ export const ui: Record<Lang, Copy> = {
         'After the pilot: more destinations and providers, alliances with international agencies, premium experiences, and Manta positioned as the strategic surf-tourism hub of Ecuador.',
     },
     contact: {
-      label: 'Let us talk',
+      label: 'Open to partners · agencies · brands',
+      title: { solid: 'Get in', ghost: 'the van.' },
       lines: ['Build the first', 'experiences with us.'],
       text: 'Let us find the right partners, set shared goals and build the first experiences together.',
       cta: 'Get in touch',
       secondary: 'Back to top',
     },
     footer: {
-      hub: 'Logistics hub: Manta, Manabí – Ecuador',
-      smallPrint: 'Radical Marino. Surf trips along the coast of Ecuador.',
+      hub: 'Hub: Manta, Manabí – Ecuador',
+      smallPrint: 'Radical Marino — Surf trips Ecuador',
     },
   },
   es: {
@@ -315,28 +392,40 @@ export const ui: Record<Lang, Copy> = {
     },
     nav: {
       route: 'Ruta',
-      experiences: 'Experiencias',
+      experiences: 'Transporte',
       partners: 'Alianzas',
       pilot: 'Piloto',
       contact: 'Contacto',
-      cta: 'Planifica tu viaje',
+      cta: 'Súbete a la van',
       switchLabel: 'Idioma',
       skip: 'Ir al contenido',
     },
     hero: {
-      label: 'Surf trips · Manta, Ecuador',
+      label: 'Surf trips · Manta, Ecuador · Tablas en el techo',
+      title: { ghost: 'Encuentra', line1: 'tu', line2: 'ola' },
       lines: ['Descubre Ecuador.', 'Encuentra tu ola.', 'Vive la experiencia.'],
+      subLines: ['6 paradas, 145 km de costa', 'hasta 4 surfistas por viaje', 'nosotros conducimos, tú surfeas'],
+      stickers: ['Salida Manta 05:30', 'Radical', 'Tablas · Cera · Gasolina'],
       intro:
         'Surf trips en grupos pequeños por la costa del Pacífico de Manabí. Nosotros nos ocupamos de la logística. Tú surfeas.',
-      cta: 'Planifica tu viaje',
+      cta: 'Súbete a la van',
       scroll: 'Desplázate',
       image: {
-        src: images.hero,
-        alt: 'Surfista sobre una ola al atardecer en la costa del Pacífico',
+        src: images.heroTruck,
+        alt: 'Camioneta doble cabina de Radical Marino con parrilla para tablas, de perfil en la playa de Ayampe al atardecer',
+        width: 1920,
+        height: 1279,
       },
     },
+    strip: stripStops,
+    stats: [
+      { value: '6', unit: 'paradas', caption: 'Una base. Una carretera.' },
+      { value: '145', unit: 'km', caption: 'De Manta a Olón, aprox.' },
+      { value: '4', unit: 'máx.', caption: 'Surfistas por salida' },
+    ],
     manifesto: {
       label: 'Por qué lo hacemos',
+      title: { solid: 'La ruta es el', accent: 'viaje.' },
       text: 'Un surf trip con nosotros va más allá de un recorrido. Es el mar, los pueblos y la gente de Manabí, vividos al ritmo de la marea. Conectamos a surfistas con la costa de Ecuador a través de experiencias reales: sesiones en olas locales, noches en pueblos pequeños, comida del mar y carreteras que siguen la línea de la costa. Todo está organizado para que lo único en lo que tengas que pensar sea la siguiente ola.',
     },
     route: {
@@ -345,71 +434,107 @@ export const ui: Record<Lang, Copy> = {
       intro:
         'Cada viaje empieza en Manta, nuestro centro logístico. Desde allí avanzamos hacia el sur, playa a playa, con tablas, alojamiento y sesiones ya organizados.',
       distanceLabel: 'Desde Manta',
+      headers: { index: '#', stop: 'Parada', info: 'Qué hay', distance: 'Desde Manta (aprox.)' },
       stops: [
         {
           id: 'manta',
           name: 'Manta',
           tag: 'Centro logístico y punto de salida',
+          info: 'Centro logístico · salida',
           description:
             'La ciudad portuaria donde empieza cada viaje. Aeropuerto, tablas, vehículos y equipo se reúnen aquí antes de bajar por la costa.',
-          distance: 'Centro logístico',
+          distance: '0 km',
           image: images.manta,
-          alt: 'Playa amplia y mar en calma cerca de una ciudad portuaria',
+          alt: 'Camioneta doble cabina de Radical Marino con parrilla para tablas frente a los edificios de Manta',
+          width: 1920,
+          height: 1080,
         },
         {
           id: 'santa-marianita',
           name: 'Santa Marianita',
           tag: 'Deportes acuáticos, ambiente costero',
+          info: 'Viento, deportes acuáticos',
           description:
             'Una playa larga y abierta conocida por el viento y los deportes acuáticos. Una primera sesión para adaptarse y leer las condiciones.',
-          distance: 'aprox. 20 km',
+          distance: '20 km',
           image: images.santaMarianita,
           alt: 'Ola rompiendo bajo un cielo despejado',
+          width: 1600,
+          height: 1067,
         },
         {
           id: 'san-mateo',
           name: 'San Mateo',
           tag: 'Cultura local, tradición surfista',
+          info: 'Point break · pueblo pesquero',
           description:
             'Un pueblo pesquero con una larga historia de surf. Point break, lineup local y una comunidad que vive del mar.',
-          distance: 'aprox. 12 km',
+          distance: '12 km',
           image: images.sanMateo,
-          alt: 'Palmeras en una playa tranquila junto a un pueblo pesquero',
+          alt: 'Camioneta doble cabina de Radical Marino con parrilla para tablas en una colina junto al faro de San Mateo',
+          width: 1080,
+          height: 1920,
         },
         {
           id: 'puerto-cayo',
           name: 'Puerto Cayo',
           tag: 'Naturaleza, calma, playas',
+          info: 'Playas tranquilas · naturaleza',
           description:
             'Mañanas lentas y playas vacías. Espacio para descansar, surfear olas sin gente y ver cómo cambia la costa.',
-          distance: 'aprox. 70 km',
+          distance: '70 km',
           image: images.puertoCayo,
           alt: 'Agua azul y clara junto a una orilla tranquila',
+          width: 1600,
+          height: 1067,
         },
         {
           id: 'ayampe',
           name: 'Ayampe',
           tag: 'Naturaleza, relax, cultura surf',
+          info: 'Beach break · pueblo surfero',
           description:
             'Un pueblo pequeño rodeado de bosque y un beach break constante. Cultura surf relajada y una comunidad cercana.',
-          distance: 'aprox. 110 km',
+          distance: '110 km',
           image: images.ayampe,
           alt: 'Surfista caminando con su tabla hacia el mar',
+          width: 1600,
+          height: 1067,
         },
         {
           id: 'montanita-olon',
-          name: 'Montañita y Olón',
+          name: 'Montañita / Olón',
           tag: 'Reconocidos internacionalmente, animados',
+          info: 'Point + playa larga · vida nocturna',
           description:
             'Los pueblos surfistas más conocidos de Ecuador. Un point break animado en Montañita y una playa larga y abierta en Olón para cerrar el viaje.',
-          distance: 'aprox. 140–145 km',
+          distance: '140–145 km',
           image: images.montanita,
           alt: 'Surfistas en el agua en un pueblo de playa concurrido',
+          width: 1600,
+          height: 1067,
         },
       ],
     },
+    transport: {
+      label: 'Transporte y logística',
+      lines: ['Nosotros conducimos.', 'Tú surfeas.'],
+      bullets: [
+        'Camioneta, tablas y equipo desde el hub de Manta',
+        'Las rutas cambian con el swell, no con el horario',
+        'Habitaciones privadas o compartidas, pensión completa',
+        'Instructores y equipo local en cada parada',
+      ],
+      cta: 'Planifica tu viaje',
+      image: {
+        src: images.transportTruck,
+        alt: 'Camioneta doble cabina de Radical Marino con parrilla para tablas en un mirador de la costa',
+        width: 1080,
+        height: 1920,
+      },
+    },
     experiences: {
-      label: 'Experiencias',
+      label: 'Viajes',
       title: 'Dos formas de viajar',
       intro:
         'Elige un viaje diseñado a tu medida o súmate a un itinerario ya organizado. En ambos casos, el grupo es pequeño.',
@@ -422,6 +547,8 @@ export const ui: Record<Lang, Copy> = {
           image: {
             src: images.custom,
             alt: 'Tablas de surf alineadas sobre la arena',
+            width: 1600,
+            height: 1067,
           },
         },
         {
@@ -431,6 +558,8 @@ export const ui: Record<Lang, Copy> = {
           image: {
             src: images.group,
             alt: 'Grupo de surfistas observando las olas desde la playa',
+            width: 1600,
+            height: 1067,
           },
         },
       ],
@@ -504,15 +633,16 @@ export const ui: Record<Lang, Copy> = {
         'Después del piloto: más destinos y proveedores, alianzas con agencias internacionales, experiencias premium y Manta posicionada como el hub estratégico del turismo de surf en Ecuador.',
     },
     contact: {
-      label: 'Hablemos',
+      label: 'Abiertos a socios · agencias · marcas',
+      title: { solid: 'Súbete', ghost: 'a la van.' },
       lines: ['Construyamos las primeras', 'experiencias juntos.'],
       text: 'Busquemos los socios adecuados, definamos objetivos compartidos y construyamos juntos las primeras experiencias.',
       cta: 'Contáctanos',
       secondary: 'Volver arriba',
     },
     footer: {
-      hub: 'Centro logístico: Manta, Manabí – Ecuador',
-      smallPrint: 'Radical Marino. Surf trips por la costa de Ecuador.',
+      hub: 'Hub: Manta, Manabí – Ecuador',
+      smallPrint: 'Radical Marino — Surf trips Ecuador',
     },
   },
 };
