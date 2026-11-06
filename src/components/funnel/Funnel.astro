@@ -74,7 +74,7 @@ const copy: Record<Lang, FunnelCopy> = {
     playVideo: 'Play video',
     pauseVideo: 'Pause video',
     cta: 'Book my spot',
-    locked: 'Unlocks when the video ends',
+    locked: 'Unlocks in',
     skip: 'Skip video',
     formTitle: 'Tell us about your trip',
     intro: 'A few details and we open WhatsApp with your request written out. You send it, we reply with dates and a plan.',
@@ -125,7 +125,7 @@ const copy: Record<Lang, FunnelCopy> = {
     playVideo: 'Reproducir video',
     pauseVideo: 'Pausar video',
     cta: 'Reserva tu lugar',
-    locked: 'Se activa al terminar el video',
+    locked: 'Se activa en',
     skip: 'Saltar video',
     formTitle: 'Cuéntanos de tu viaje',
     intro: 'Unos pocos datos y abrimos WhatsApp con tu solicitud ya escrita. Tú la envías y te respondemos con fechas y un plan.',
@@ -561,6 +561,8 @@ const people = Array.from({ length: 8 }, (_, i) => i + 1);
   // Booking WhatsApp line confirmed by the operator: +593 98 052 0531.
   const WHATSAPP_NUMBER = '593980520531';
   const SKIP_AFTER_S = 10;
+  // The booking CTA unlocks once this share of the video has played, not only at the end.
+  const UNLOCK_AT = 0.15;
   const FAILSAFE_MS = 4000;
 
   interface ClientCopy {
@@ -614,7 +616,12 @@ const people = Array.from({ length: 8 }, (_, i) => i + 1);
       progress.style.transform = `scaleX(${Math.min(now / total, 1)})`;
       timecode.textContent = `${clock(now)} / ${clock(total)}`;
       if (locked) {
-        const left = Math.max(Math.ceil(total - now), 0);
+        const unlockAt = total * UNLOCK_AT;
+        if (now >= unlockAt) {
+          unlockAndFocus();
+          return;
+        }
+        const left = Math.max(Math.ceil(unlockAt - now), 0);
         ctaLock.textContent = `${c.locked} · ${Math.floor(left / 60)}:${pad(left % 60)}`;
         if (now >= SKIP_AFTER_S && skip.hidden) {
           skip.hidden = false;
@@ -649,6 +656,14 @@ const people = Array.from({ length: 8 }, (_, i) => i + 1);
       }
     };
 
+    // Unlock with the pop and take focus only when the visitor is not focused elsewhere.
+    function unlockAndFocus() {
+      if (!locked) return;
+      const focusIsFree = !document.activeElement || document.activeElement === document.body;
+      unlock(true);
+      if (focusIsFree && !step1.hidden) cta.focus({ preventScroll: true });
+    }
+
     video.addEventListener('playing', () => {
       started = true;
       bigPlay.hidden = true;
@@ -663,9 +678,7 @@ const people = Array.from({ length: 8 }, (_, i) => i + 1);
     video.addEventListener('ended', () => {
       syncToggle();
       render();
-      const focusIsFree = !document.activeElement || document.activeElement === document.body;
-      unlock(true);
-      if (focusIsFree && !step1.hidden) cta.focus();
+      unlockAndFocus();
     });
 
     const togglePlay = () => {
