@@ -8,6 +8,18 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 const cell = 'border-b border-dashed border-dash py-5';
+const showLabel = (name: string) =>
+  lang === 'es' ? `Mostrar ${name} en el collage` : `Show ${name} in the collage`;
+
+// Hand-tuned collage slots (centre x, centre y, tilt). Later prints sit nearer the centre and on top.
+const slots = [
+  { x: '36%', y: '30%', r: '-7deg' },
+  { x: '64%', y: '34%', r: '6deg' },
+  { x: '40%', y: '62%', r: '3deg' },
+  { x: '63%', y: '66%', r: '-9deg' },
+  { x: '44%', y: '44%', r: '8deg' },
+  { x: '55%', y: '52%', r: '-3deg' },
+];
 ---
 
 <section id="route" data-route class="section-y border-t border-line" aria-labelledby="route-title">
@@ -18,7 +30,38 @@ const cell = 'border-b border-dashed border-dash py-5';
     </h2>
 
     <div class="mt-12 lg:grid lg:grid-cols-[3fr_2fr] lg:items-start lg:gap-12">
-      <div class="relative pl-6 md:pl-8">
+      <div id="route-board" data-route-board class="route-board lg:col-start-2 lg:row-start-1">
+        <div data-route-pile class="absolute inset-0">
+          {
+            t.route.stops.map((stop, index) => (
+              <div
+                class="route-slot"
+                style={`--x:${slots[index].x};--y:${slots[index].y};--r:${slots[index].r}`}
+              >
+                <figure data-print={index} class="route-print">
+                  <img
+                    data-asset-slot={`route-${stop.id}`}
+                    src={stop.image.src}
+                    srcset={stop.image.srcset}
+                    sizes={stop.image.sizes}
+                    alt={stop.image.alt}
+                    width={stop.image.width}
+                    height={stop.image.height}
+                    loading="lazy"
+                    decoding="async"
+                    class="aspect-[5/4] w-full object-cover"
+                  />
+                  <figcaption class="route-print-caption">
+                    {String(index + 1).padStart(2, '0')} · {stop.name}
+                  </figcaption>
+                </figure>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+
+      <div class="relative pl-6 md:pl-8 lg:col-start-1 lg:row-start-1">
         <div
           data-route-line
           class="absolute inset-y-0 left-0 border-l border-dashed border-muted"
@@ -43,7 +86,7 @@ const cell = 'border-b border-dashed border-dash py-5';
                 role="row"
                 data-stop={stop.id}
                 data-fade
-                class="grid grid-cols-[3.5rem_1fr_auto] items-center md:grid-cols-[4rem_1.4fr_1fr_auto]"
+                class="relative grid grid-cols-[3.5rem_1fr_auto] items-center md:grid-cols-[4rem_1.4fr_1fr_auto]"
               >
                 <span role="cell" class={`${cell} font-bold text-orange`}>
                   {String(index + 1).padStart(2, '0')}
@@ -52,7 +95,15 @@ const cell = 'border-b border-dashed border-dash py-5';
                   role="cell"
                   class={`${cell} display text-[clamp(1.4rem,2.6vw,2.4rem)] tracking-[-0.02em]`}
                 >
-                  {stop.name}
+                  <button
+                    type="button"
+                    data-stop-button
+                    class="route-stop-btn"
+                    aria-controls="route-board"
+                    aria-label={showLabel(stop.name)}
+                  >
+                    {stop.name}
+                  </button>
                 </span>
                 <span role="cell" class={`${cell} hidden pr-6 text-muted-light md:block`}>
                   {stop.info}
@@ -61,28 +112,6 @@ const cell = 'border-b border-dashed border-dash py-5';
                   {stop.distance}
                 </span>
               </div>
-            ))
-          }
-        </div>
-      </div>
-
-      <div class="hidden lg:block">
-        <div class="sticky top-24 aspect-[4/5] overflow-hidden bg-line">
-          {
-            t.route.stops.map((stop, index) => (
-              <img
-                data-route-img={stop.id}
-                data-asset-slot={`route-${stop.id}`}
-                src={stop.image.src}
-                srcset={stop.image.srcset}
-                sizes={stop.image.sizes}
-                alt={stop.image.alt}
-                width={stop.image.width}
-                height={stop.image.height}
-                loading="lazy"
-                decoding="async"
-                class:list={['absolute inset-0 h-full w-full object-cover', index === 0 && 'is-active']}
-              />
             ))
           }
         </div>

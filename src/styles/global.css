@@ -175,23 +175,115 @@
   transform-origin: top;
 }
 
-/* Route: stacked stop photos in the sticky column; the active one crossfades in.
-   Driven by a class toggle, so a CSS transition retargets cleanly on fast scroll. */
-[data-route-img] {
+/* Route collage: each stop is an instant-photo print slapped onto a sticky board.
+   CSS holds every print in its final slot (the no-JS / reduced-motion state);
+   GSAP only adds a transient transform/opacity offset on top of it. */
+.route-board {
+  position: sticky;
+  top: 4rem;
+  z-index: 10;
+  height: 42svh;
+  margin-bottom: 1.5rem;
+  overflow-x: clip;
+  container-type: size;
+  @apply border-b border-line bg-asphalt;
+}
+
+@media (min-width: 1024px) {
+  .route-board {
+    top: 6rem;
+    height: 70svh;
+    margin-bottom: 0;
+    border-bottom: 0;
+    background: transparent;
+  }
+}
+
+/* The slot carries the static placement; GSAP animates only the print inside it,
+   because GSAP folds individual `translate`/`rotate` into its own transform. */
+.route-slot {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: min(60cqw, 56cqh);
+  translate: -50% -50%;
+  rotate: var(--r);
+}
+
+.route-print {
+  position: relative;
+  padding: 6px 6px 22px;
+  box-shadow: 0 18px 40px -12px rgb(0 0 0 / 0.6);
+  @apply bg-bone;
+}
+
+@media (min-width: 1024px) {
+  .route-slot {
+    width: min(70cqw, 48cqh);
+  }
+
+  .route-print {
+    padding: 9px 9px 30px;
+  }
+}
+
+/* Masking tape strip across the top edge. */
+.route-print::before {
+  content: '';
+  position: absolute;
+  top: -9px;
+  left: 50%;
+  width: 36%;
+  height: 18px;
+  translate: -50% 0;
+  rotate: -4deg;
+  background: color-mix(in oklab, var(--color-line-light) 65%, transparent);
+}
+
+.route-print-caption {
+  position: absolute;
+  inset-inline: 6px;
+  bottom: 4px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  @apply font-mono text-[10px] uppercase tracking-[0.06em] text-asphalt;
+}
+
+@media (min-width: 1024px) {
+  .route-print-caption {
+    inset-inline: 9px;
+    bottom: 7px;
+    font-size: 11px;
+  }
+}
+
+/* Prints after the first wait off the board until their row arrives. */
+.js .route-slot:not(:first-child) .route-print {
   opacity: 0;
-  transform: scale(1.06);
-  transition:
-    opacity 500ms var(--ease-out-strong),
-    transform 500ms var(--ease-out-strong);
+  visibility: hidden;
 }
 
-[data-route-img].is-active {
-  opacity: 1;
-  transform: none;
+/* Row button: the stop name, with a pseudo-element stretched over the whole row
+   so any part of the row is a >=44px hit target and carries the focus ring. */
+.route-stop-btn {
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  outline: none;
 }
 
-[data-stop].is-active {
-  @apply bg-line/50;
+.route-stop-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  min-height: 44px;
+}
+
+.route-stop-btn:focus-visible::after {
+  @apply outline-2 -outline-offset-2 outline-orange;
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -214,9 +306,11 @@
   .js [data-sticker],
   .js [data-pilot-dot],
   .js [data-pilot-line],
-  .js [data-route-line] {
+  .js [data-route-line],
+  .js .route-print {
     transform: none;
     opacity: 1;
+    visibility: visible;
   }
 
   .js [data-word] {
@@ -230,8 +324,7 @@
   .btn,
   .link-underline::after,
   .skip-link,
-  .nav,
-  [data-route-img] {
+  .nav {
     transition-duration: 1ms;
   }
 }
