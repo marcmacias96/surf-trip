@@ -1,0 +1,23 @@
+---
+import { useTranslations, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const words = t.manifesto.text.split(' ');
+---
+
+<section id="manifesto" class="section-y bg-navy text-sand" aria-labelledby="manifesto-title">
+  <div class="container-x">
+    <h2 id="manifesto-title" class="label mb-10 text-sun">{t.manifesto.label}</h2>
+    <p
+      data-manifesto
+      class="display max-w-6xl text-[clamp(1.75rem,4.2vw,4rem)] font-bold normal-case leading-[1.1] tracking-normal"
+    >
+      {words.map((word) => <span data-word>{`${word} `}</span>)}
+    </p>
+  </div>
+</section>

@@ -1,0 +1,49 @@
+---
+import { useTranslations, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<section id="route" data-route class="relative bg-sand" aria-labelledby="route-title">
+  <div data-route-head class="container-x pt-24 lg:pt-40">
+    <p class="label text-ocean">{t.route.label}</p>
+    <h2 id="route-title" class="display mt-3 text-[clamp(2rem,5vw,4.5rem)]">{t.route.title}</h2>
+    <p data-route-intro class="mt-4 max-w-xl text-ink-700">{t.route.intro}</p>
+  </div>
+
+  <ol data-route-track class="container-x mt-12 grid gap-6 pb-24 lg:pb-40">
+    {
+      t.route.stops.map((stop, index) => (
+        <li data-route-panel class="tile grid overflow-hidden md:grid-cols-2">
+          <div data-route-copy class="order-2 flex flex-col justify-end p-6 md:order-1 md:p-10">
+            <span class="display block text-[clamp(4rem,12vw,11rem)] leading-none text-ocean/20">
+              {String(index + 1).padStart(2, '0')}
+            </span>
+            <h3 class="display mt-2 text-[clamp(1.75rem,3.5vw,3.5rem)]">{stop.name}</h3>
+            <p class="label mt-3 text-ocean">{stop.tag}</p>
+            <p class="mt-6 max-w-md text-ink-700">{stop.description}</p>
+            <p class="label mt-8 text-ink-500">
+              {t.route.distanceLabel}: <span class="text-navy">{stop.distance}</span>
+            </p>
+          </div>
+          <img
+            data-asset-slot={`route-${stop.id}`}
+            src={stop.image}
+            alt={stop.alt}
+            width="1600"
+            height="1067"
+            loading="lazy"
+            class="order-1 aspect-[4/3] w-full object-cover md:order-2 md:aspect-auto md:h-full"
+          />
+        </li>
+      ))
+    }
+  </ol>
+
+  <div data-route-progress class="absolute inset-x-0 bottom-0 h-1 bg-sun" aria-hidden="true"></div>
+</section>

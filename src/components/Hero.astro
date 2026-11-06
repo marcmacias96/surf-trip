@@ -1,0 +1,58 @@
+---
+import { useTranslations, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<section
+  id="top"
+  data-hero
+  class="relative flex min-h-svh items-end overflow-hidden bg-navy text-sand"
+  aria-labelledby="hero-title"
+>
+  <img
+    data-hero-img
+    data-asset-slot="hero"
+    src={t.hero.image.src}
+    alt={t.hero.image.alt}
+    width="1600"
+    height="1067"
+    loading="eager"
+    fetchpriority="high"
+    class="absolute inset-x-0 -top-[15%] h-[130%] w-full object-cover"
+  />
+  <div class="absolute inset-0 bg-gradient-to-t from-navy via-navy/55 to-navy/10" aria-hidden="true"></div>
+
+  <div class="container-x relative pb-24 pt-40 lg:pb-32">
+    <p class="label mb-6 text-sun">{t.hero.label}</p>
+    <h1 id="hero-title" class="display text-[clamp(2.75rem,9vw,8.5rem)]">
+      {
+        t.hero.lines.map((line, index) => (
+          <span class="block overflow-hidden">
+            <span data-line class:list={['block', index === 1 && 'font-light']}>
+              {line}
+            </span>
+          </span>
+        ))
+      }
+    </h1>
+    <div class="mt-10 flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
+      <p data-fade class="max-w-md text-base text-sand/80 md:text-lg">{t.hero.intro}</p>
+      <a data-fade href="#contact" class="btn-primary self-start">{t.hero.cta}</a>
+    </div>
+  </div>
+
+  <a
+    data-scroll-cue
+    href="#manifesto"
+    class="label absolute bottom-6 left-1/2 hidden -translate-x-1/2 items-center gap-2 text-sand/70 md:flex"
+  >
+    {t.hero.scroll}
+    <span class="block h-8 w-px bg-sand/50" aria-hidden="true"></span>
+  </a>
+</section>

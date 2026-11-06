@@ -1,0 +1,38 @@
+---
+import { useTranslations, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<section id="partners" class="section-y bg-navy text-sand" aria-labelledby="partners-title">
+  <div class="container-x">
+    <p class="label text-sun">{t.partners.label}</p>
+    <h2 id="partners-title" class="display mt-3 text-[clamp(2rem,5vw,4.5rem)]">
+      {t.partners.title}
+    </h2>
+    <p class="mt-4 max-w-xl text-sand/80">{t.partners.intro}</p>
+
+    <div class="mt-14 grid gap-px bg-sand/15 md:grid-cols-2">
+      {
+        t.partners.areas.map((area) => (
+          <article data-fade class="bg-navy p-6 md:p-10">
+            <h3 class="label text-sun">{area.title}</h3>
+            <ul class="mt-6 space-y-3">
+              {area.items.map((item) => (
+                <li class="flex items-baseline gap-3">
+                  <span class="h-px w-4 shrink-0 translate-y-[-0.25em] bg-sand/50" aria-hidden="true" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>

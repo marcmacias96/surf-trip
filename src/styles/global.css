@@ -1,1 +1,237 @@
 @import "tailwindcss";
+
+@theme {
+  --color-sand: #f7f4ee;
+  --color-navy: #0b1f2e;
+  --color-ocean: #005aa0;
+  --color-sun: #ffd040;
+  --color-ink-700: #424242;
+  --color-ink-500: #616161;
+  --color-ink-300: #bdbdbd;
+  --color-line: #e6e1d8;
+
+  --font-display: "Archivo", "Arial Narrow", sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+
+  --radius-tile: 2px;
+  --radius-card: 4px;
+
+  --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+@layer base {
+  html {
+    scroll-behavior: auto;
+  }
+
+  body {
+    @apply bg-sand font-body text-navy antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-display font-bold uppercase;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-ocean;
+  }
+
+  ::selection {
+    @apply bg-sun text-navy;
+  }
+}
+
+@layer components {
+  .container-x {
+    @apply mx-auto w-full max-w-[1440px] px-6 md:px-12 xl:px-20;
+  }
+
+  .section-y {
+    @apply py-24 lg:py-40;
+  }
+
+  .label {
+    @apply font-body text-xs font-medium uppercase tracking-[0.08em];
+  }
+
+  .display {
+    @apply font-display font-extrabold uppercase leading-[0.95] tracking-[-0.02em];
+    font-stretch: 125%;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-tile bg-sun px-6 py-3 font-display text-sm font-bold uppercase tracking-[0.08em] text-navy;
+    transition: transform 160ms var(--ease-out-strong);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .btn-primary:hover {
+      transform: translateY(-2px);
+    }
+  }
+
+  .btn-primary:active {
+    transform: translateY(0);
+  }
+
+  .link-underline {
+    @apply relative inline-block font-display text-sm font-bold uppercase tracking-[0.08em];
+  }
+
+  .link-underline::after {
+    content: "";
+    @apply absolute inset-x-0 -bottom-0.5 h-px origin-left bg-current;
+    transform: scaleX(0);
+    transition: transform 240ms var(--ease-out-strong);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .link-underline:hover::after,
+    .link-underline:focus-visible::after {
+      transform: scaleX(1);
+    }
+  }
+
+  .skip-link {
+    @apply fixed top-2 left-2 z-[100] -translate-y-24 rounded-tile bg-navy px-4 py-2 text-sm font-medium text-sand;
+    transition: transform 160ms var(--ease-out-strong);
+  }
+
+  .skip-link:focus-visible {
+    transform: translateY(0);
+  }
+
+  .tile {
+    @apply rounded-card border border-line bg-sand;
+  }
+}
+
+/* Marquee: predetermined constant motion, so CSS runs it off the main thread. */
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-track {
+  animation: marquee 40s linear infinite;
+}
+
+/* Initial states for GSAP. Applied only when JS ran (html.js), so the page is
+   fully readable without scripts. GSAP animates every element to its final state. */
+.js [data-line] {
+  transform: translateY(110%);
+}
+
+.js [data-fade] {
+  opacity: 0;
+  transform: translateY(24px);
+}
+
+.js [data-word] {
+  opacity: 0.2;
+}
+
+.js [data-pilot-dot] {
+  opacity: 0;
+  transform: scale(0.6);
+}
+
+.js [data-pilot-line] {
+  transform: scaleY(0);
+  transform-origin: top;
+}
+
+@media (min-width: 1024px) {
+  .js [data-pilot-line] {
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+}
+
+/* Route: the horizontal track is enabled by JS only on desktop without reduced
+   motion (.route--horizontal). The default is a stacked card list at every width. */
+.route--horizontal {
+  height: 100vh;
+  overflow: hidden;
+}
+
+.route--horizontal [data-route-head] {
+  @apply absolute inset-x-0 top-0 z-10 pt-28;
+}
+
+.route--horizontal [data-route-head] h2 {
+  @apply max-w-[50%] text-[clamp(1.5rem,3vw,2.5rem)];
+}
+
+.route--horizontal [data-route-intro] {
+  display: none;
+}
+
+.route--horizontal [data-route-track] {
+  @apply m-0 flex max-w-none gap-0 p-0;
+  width: max-content;
+}
+
+.route--horizontal [data-route-panel] {
+  @apply h-screen w-screen flex-none rounded-none border-0 bg-transparent;
+}
+
+.route--horizontal [data-route-copy] {
+  @apply pb-16 pl-20 pt-40;
+}
+
+.route--horizontal [data-route-progress] {
+  display: block;
+}
+
+[data-route-progress] {
+  display: none;
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.nav {
+  transition:
+    background-color 240ms var(--ease-out-strong),
+    border-color 240ms var(--ease-out-strong),
+    color 240ms var(--ease-out-strong);
+}
+
+.nav.is-scrolled {
+  @apply border-line bg-sand text-navy;
+}
+
+.nav:not(.is-scrolled) {
+  @apply border-transparent text-sand;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js [data-line],
+  .js [data-fade],
+  .js [data-pilot-dot],
+  .js [data-pilot-line] {
+    transform: none;
+    opacity: 1;
+  }
+
+  .js [data-word] {
+    opacity: 1;
+  }
+
+  .marquee-track {
+    animation-play-state: paused;
+  }
+
+  .btn-primary,
+  .link-underline::after,
+  .skip-link {
+    transition-duration: 1ms;
+  }
+
+  [data-scroll-cue] {
+    animation: none;
+  }
+}

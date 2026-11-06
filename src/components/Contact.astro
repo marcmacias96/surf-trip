@@ -1,0 +1,34 @@
+---
+import { useTranslations, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+// TODO(content): replace with the real Radical Marino contact address.
+const email = 'hello@radicalmarino.com';
+---
+
+<section id="contact" data-contact class="section-y bg-sand" aria-labelledby="contact-title">
+  <div class="container-x">
+    <p class="label text-ocean">{t.contact.label}</p>
+    <h2 id="contact-title" class="display mt-6 text-[clamp(2.5rem,8vw,7.5rem)]">
+      {
+        t.contact.lines.map((line, index) => (
+          <span class="block overflow-hidden">
+            <span data-line class:list={['block', index === 1 && 'font-light']}>
+              {line}
+            </span>
+          </span>
+        ))
+      }
+    </h2>
+    <p data-fade class="mt-10 max-w-xl text-lg text-ink-700">{t.contact.text}</p>
+    <div data-fade class="mt-10 flex flex-wrap items-center gap-8">
+      <a href={`mailto:${email}`} class="btn-primary">{t.contact.cta}</a>
+      <a href="#top" class="link-underline text-ocean">{t.contact.secondary}</a>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,58 @@
+---
+import { useTranslations, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const slots = ['experience-custom', 'experience-group'];
+---
+
+<section id="experiences" class="section-y bg-sand" aria-labelledby="experiences-title">
+  <div class="container-x">
+    <p class="label text-ocean">{t.experiences.label}</p>
+    <h2 id="experiences-title" class="display mt-3 text-[clamp(2rem,5vw,4.5rem)]">
+      {t.experiences.title}
+    </h2>
+    <div class="mt-4 flex flex-col gap-3 md:flex-row md:items-baseline md:justify-between">
+      <p class="max-w-xl text-ink-700">{t.experiences.intro}</p>
+      <p class="label text-navy">{t.experiences.capacity}</p>
+    </div>
+
+    <div class="mt-14 grid gap-6 md:grid-cols-2">
+      {
+        t.experiences.modalities.map((modality, index) => (
+          <article data-fade class="tile overflow-hidden">
+            <img
+              data-asset-slot={slots[index]}
+              src={modality.image.src}
+              alt={modality.image.alt}
+              width="1600"
+              height="1067"
+              loading="lazy"
+              class="aspect-[3/2] w-full object-cover"
+            />
+            <div class="p-6 md:p-8">
+              <h3 class="display text-2xl md:text-3xl">{modality.title}</h3>
+              <p class="mt-4 text-ink-700">{modality.description}</p>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+
+    <h3 class="label mt-20 text-ocean">{t.experiences.includedTitle}</h3>
+    <ul class="mt-6 grid gap-x-12 md:grid-cols-2">
+      {
+        t.experiences.included.map((item, index) => (
+          <li data-fade class="flex items-baseline gap-4 border-b border-line py-4">
+            <span class="label w-6 shrink-0 text-ink-300">{String(index + 1).padStart(2, '0')}</span>
+            <span class="font-medium">{item}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

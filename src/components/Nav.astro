@@ -1,0 +1,59 @@
+---
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { languages, useTranslations, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const links = [
+  { href: '#route', label: t.nav.route },
+  { href: '#experiences', label: t.nav.experiences },
+  { href: '#partners', label: t.nav.partners },
+  { href: '#pilot', label: t.nav.pilot },
+  { href: '#contact', label: t.nav.contact },
+];
+---
+
+<a href="#main" class="skip-link">{t.nav.skip}</a>
+
+<header data-nav class="nav fixed inset-x-0 top-0 z-50 border-b">
+  <nav class="container-x flex h-20 items-center justify-between gap-6" aria-label="Main">
+    <a href="#top" class="font-display text-base font-extrabold uppercase tracking-[0.08em]">
+      Radical Marino
+    </a>
+
+    <ul class="hidden items-center gap-8 lg:flex">
+      {
+        links.map((link) => (
+          <li>
+            <a href={link.href} class="link-underline">
+              {link.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="flex items-center gap-4 md:gap-6">
+      <ul class="label flex items-center gap-2" aria-label={t.nav.switchLabel}>
+        {
+          (Object.keys(languages) as Lang[]).map((code) => (
+            <li>
+              <a
+                href={getRelativeLocaleUrl(code)}
+                aria-current={code === lang ? 'page' : undefined}
+                class:list={['link-underline', code === lang ? 'opacity-100' : 'opacity-60']}
+              >
+                {languages[code]}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <a href="#contact" class="btn-primary hidden md:inline-flex">{t.nav.cta}</a>
+    </div>
+  </nav>
+</header>

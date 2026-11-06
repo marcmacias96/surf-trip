@@ -1,0 +1,48 @@
+---
+import { useTranslations, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<section id="pilot" data-pilot class="section-y bg-sand" aria-labelledby="pilot-title">
+  <div class="container-x">
+    <p class="label text-ocean">{t.pilot.label}</p>
+    <h2 id="pilot-title" class="display mt-3 text-[clamp(2rem,5vw,4.5rem)]">{t.pilot.title}</h2>
+
+    <div class="relative mt-14">
+      <div
+        data-pilot-line
+        class="absolute left-[7px] top-0 h-full w-px bg-ocean lg:left-0 lg:top-[7px] lg:h-px lg:w-full"
+        aria-hidden="true"
+      >
+      </div>
+      <ol class="grid gap-10 lg:grid-cols-8 lg:gap-x-6">
+        {
+          t.pilot.steps.map((step, index) => (
+            <li class="relative pl-10 lg:pl-0 lg:pt-10">
+              <span
+                data-pilot-dot
+                class="absolute left-0 top-[3px] block h-4 w-4 rounded-full border-2 border-sand bg-ocean lg:left-0 lg:top-0"
+                aria-hidden="true"
+              />
+              <span class="label text-ink-500">{String(index + 1).padStart(2, '0')}</span>
+              <p class="mt-2 font-medium">{step}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+
+    <div class="mt-24 grid gap-6 border-t border-line pt-10 md:grid-cols-[1fr_2fr]">
+      <h3 class="label text-ocean">{t.pilot.visionTitle}</h3>
+      <p class="display max-w-3xl text-[clamp(1.25rem,2.4vw,2rem)] font-bold normal-case leading-[1.2] tracking-normal">
+        {t.pilot.vision}
+      </p>
+    </div>
+  </div>
+</section>
