@@ -21,6 +21,7 @@
 
 @layer base {
   html {
+    scroll-padding-top: 5rem;
     scroll-behavior: auto;
   }
 
@@ -88,10 +89,13 @@
   }
 
   @media (hover: hover) and (pointer: fine) {
-    .link-underline:hover::after,
-    .link-underline:focus-visible::after {
+    .link-underline:hover::after {
       transform: scaleX(1);
     }
+  }
+
+  .link-underline:focus-visible::after {
+    transform: scaleX(1);
   }
 
   .skip-link {
@@ -179,8 +183,12 @@
   @apply h-screen w-screen flex-none rounded-none border-0 bg-transparent;
 }
 
+.route--horizontal [data-route-panel] h3 {
+  @apply text-[clamp(2rem,5vw,4.5rem)];
+}
+
 .route--horizontal [data-route-copy] {
-  @apply pb-16 pl-20 pt-40;
+  @apply pb-16 pl-12 pt-40 xl:pl-20;
 }
 
 .route--horizontal [data-route-progress] {

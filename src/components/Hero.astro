@@ -27,10 +27,11 @@ const t = useTranslations(lang);
     class="absolute inset-x-0 -top-[15%] h-[130%] w-full object-cover"
   />
   <div class="absolute inset-0 bg-gradient-to-t from-navy via-navy/55 to-navy/10" aria-hidden="true"></div>
+  <div class="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-navy/70 to-transparent" aria-hidden="true"></div>
 
   <div class="container-x relative pb-24 pt-40 lg:pb-32">
     <p class="label mb-6 text-sun">{t.hero.label}</p>
-    <h1 id="hero-title" class="display text-[clamp(2.25rem,9vw,8.5rem)]">
+    <h1 id="hero-title" class="display text-[clamp(2.25rem,6.2vw,5.5rem)]">
       {
         t.hero.lines.map((line, index) => (
           <span class="block overflow-hidden">

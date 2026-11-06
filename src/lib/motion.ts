@@ -12,7 +12,7 @@ const q = <T extends Element = HTMLElement>(selector: string, root: ParentNode =
   root.querySelector<T>(selector);
 
 function startLenis() {
-  const lenis = new Lenis({ autoRaf: false, anchors: true });
+  const lenis = new Lenis({ autoRaf: false, anchors: { offset: -80 } });
   lenis.on('scroll', ScrollTrigger.update);
   gsap.ticker.add((time) => lenis.raf(time * 1000));
   gsap.ticker.lagSmoothing(0);
@@ -81,7 +81,7 @@ function initRoute(): (() => void) | undefined {
         start: 'top top',
         end: () => `+=${distance()}`,
         pin: true,
-        scrub: 1,
+        scrub: true,
         invalidateOnRefresh: true,
       },
     })
