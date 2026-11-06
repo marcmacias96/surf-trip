@@ -12,7 +12,7 @@ const slots = ['experience-custom', 'experience-group'];
 
 <section id="experiences" class="border-t-4 border-bone" aria-labelledby="transport-title">
   <div class="grid lg:grid-cols-2">
-    <picture class="block">
+    <picture class="relative block">
       <source
         media="(max-width: 767px)"
         srcset={t.transport.image.mobile.srcset}
@@ -30,10 +30,10 @@ const slots = ['experience-custom', 'experience-group'];
         height={t.transport.image.desktop.height}
         loading="lazy"
         decoding="async"
-        class="block aspect-[4/5] w-full object-cover lg:aspect-auto lg:h-full lg:min-h-[480px]"
+        class="block aspect-[4/5] w-full object-cover md:aspect-[3/2] lg:absolute lg:inset-0 lg:aspect-auto lg:h-full"
       />
     </picture>
-    <div class="bg-bone px-[clamp(24px,4vw,64px)] py-16 text-asphalt">
+    <div class="bg-bone px-[clamp(24px,4vw,64px)] py-16 text-asphalt lg:py-20">
       <p class="mono">{t.transport.label}</p>
       <h2
         id="transport-title"
