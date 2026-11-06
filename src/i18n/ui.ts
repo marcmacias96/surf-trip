@@ -466,7 +466,7 @@ export const ui: Record<Lang, Copy> = {
       title: { solid: 'Get in', ghost: 'the truck.' },
       lines: ['Build the first', 'experiences with us.'],
       text: 'Let us find the right partners, set shared goals and build the first experiences together.',
-      cta: 'Get in touch',
+      cta: 'Book my spot',
       secondary: 'Back to top',
     },
     footer: {
@@ -786,7 +786,7 @@ export const ui: Record<Lang, Copy> = {
       title: { solid: 'Súbete a la', ghost: 'camioneta.' },
       lines: ['Construyamos las primeras', 'experiencias juntos.'],
       text: 'Busquemos los socios adecuados, definamos objetivos compartidos y construyamos juntos las primeras experiencias.',
-      cta: 'Contáctanos',
+      cta: 'Reserva tu lugar',
       secondary: 'Volver arriba',
     },
     footer: {
