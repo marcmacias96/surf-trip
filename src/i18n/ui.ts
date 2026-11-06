@@ -166,7 +166,7 @@ export const ui: Record<Lang, Copy> = {
       partners: 'Partners',
       pilot: 'Pilot',
       contact: 'Contact',
-      cta: 'Get in the van',
+      cta: 'Get in the truck',
       ctaShort: 'Book',
       switchLabel: 'Language',
       skip: 'Skip to content',
@@ -179,7 +179,7 @@ export const ui: Record<Lang, Copy> = {
       stickers: ['Depart Manta 05:30', 'Radical', 'Boards · Wax · Fuel'],
       intro:
         'Small-group surf trips along the Pacific coast of Manabí. We handle the logistics. You surf.',
-      cta: 'Get in the van',
+      cta: 'Get in the truck',
       scroll: 'Scroll',
       image: {
         mobile: {
@@ -463,7 +463,7 @@ export const ui: Record<Lang, Copy> = {
     },
     contact: {
       label: 'Open to partners · agencies · brands',
-      title: { solid: 'Get in', ghost: 'the van.' },
+      title: { solid: 'Get in', ghost: 'the truck.' },
       lines: ['Build the first', 'experiences with us.'],
       text: 'Let us find the right partners, set shared goals and build the first experiences together.',
       cta: 'Get in touch',
@@ -486,7 +486,7 @@ export const ui: Record<Lang, Copy> = {
       partners: 'Alianzas',
       pilot: 'Piloto',
       contact: 'Contacto',
-      cta: 'Súbete a la van',
+      cta: 'Súbete a la camioneta',
       ctaShort: 'Reservar',
       switchLabel: 'Idioma',
       skip: 'Ir al contenido',
@@ -499,7 +499,7 @@ export const ui: Record<Lang, Copy> = {
       stickers: ['Salida Manta 05:30', 'Radical', 'Tablas · Cera · Gasolina'],
       intro:
         'Surf trips en grupos pequeños por la costa del Pacífico de Manabí. Nosotros nos ocupamos de la logística. Tú surfeas.',
-      cta: 'Súbete a la van',
+      cta: 'Súbete a la camioneta',
       scroll: 'Desplázate',
       image: {
         mobile: {
@@ -783,7 +783,7 @@ export const ui: Record<Lang, Copy> = {
     },
     contact: {
       label: 'Abiertos a socios · agencias · marcas',
-      title: { solid: 'Súbete', ghost: 'a la van.' },
+      title: { solid: 'Súbete a la', ghost: 'camioneta.' },
       lines: ['Construyamos las primeras', 'experiencias juntos.'],
       text: 'Busquemos los socios adecuados, definamos objetivos compartidos y construyamos juntos las primeras experiencias.',
       cta: 'Contáctanos',
