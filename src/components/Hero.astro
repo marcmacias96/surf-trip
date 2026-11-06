@@ -8,7 +8,7 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 const stickerClasses = [
-  '-top-4 left-[6%] -rotate-6',
+  '-top-4 left-[6%] -rotate-6 lg:top-8 lg:left-[40%]',
   'top-10 right-[5%] rotate-3 bg-orange',
   'bottom-7 left-[10%] rotate-2 bg-sea',
 ];
@@ -17,7 +17,7 @@ const stickerClasses = [
 <section id="top" data-hero class="overflow-hidden pt-32 lg:pt-40" aria-labelledby="hero-title">
   <div class="container-x">
     <p class="mono mb-5 text-orange">{t.hero.label}</p>
-    <h1 id="hero-title" class="display text-[clamp(2.75rem,12vw,15rem)] leading-[0.82]">
+    <h1 id="hero-title" class="display relative z-10 text-[clamp(2.75rem,9vw,9rem)] leading-[0.82]">
       <span class="block">
         <span class="inline-block overflow-hidden align-top">
           <span data-line class="ghost inline-block text-bone">{t.hero.title.ghost}</span>
@@ -36,7 +36,8 @@ const stickerClasses = [
       </span>
     </h1>
 
-    <ul class="mono mt-7 flex flex-wrap gap-x-8 gap-y-2 text-muted-light">
+    <div class="lg:-mt-28 lg:grid lg:grid-cols-12 lg:gap-x-8">
+    <ul class="mono mt-7 flex flex-wrap gap-x-8 gap-y-2 text-muted-light lg:col-span-2 lg:mt-0 lg:flex-col lg:gap-y-3 lg:self-end lg:pb-8">
       {
         t.hero.subLines.map((line, index) => (
           <li data-fade>
@@ -46,9 +47,9 @@ const stickerClasses = [
       }
     </ul>
 
-    <div data-hero-pic class="relative mt-10">
+    <div data-hero-pic class="relative mt-10 lg:col-span-10 lg:mt-0">
       <!-- Portrait photo in a 4/5 box on phones, the landscape sunset in a 3/2 box from md. -->
-      <div class="aspect-[4/5] overflow-hidden md:aspect-[3/2] md:max-h-[68vh]">
+      <div class="relative aspect-[4/5] overflow-hidden md:aspect-[3/2] md:max-h-[68vh]">
         <picture>
           <source
             media="(max-width: 767px)"
@@ -71,6 +72,9 @@ const stickerClasses = [
             class="relative top-[-7.5%] block h-[115%] w-full object-cover"
           />
         </picture>
+        <!-- On desktop the photo rises behind the headline, so it fades out of the page colour at its top-left. -->
+        <div class="pointer-events-none absolute inset-0 hidden bg-gradient-to-b from-asphalt/85 via-asphalt/10 to-transparent lg:block" aria-hidden="true"></div>
+        <div class="pointer-events-none absolute inset-0 hidden bg-gradient-to-r from-asphalt/70 via-transparent to-transparent lg:block" aria-hidden="true"></div>
       </div>
       {
         t.hero.stickers.map((text, index) => (
@@ -79,6 +83,7 @@ const stickerClasses = [
           </span>
         ))
       }
+    </div>
     </div>
   </div>
 </section>
