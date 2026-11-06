@@ -94,8 +94,8 @@ const images = {
   puertoCayo: unsplash('photo-1505118380757-91f5f5632de0'),
   ayampe: unsplash('photo-1509914398892-963f53e6e2f1'),
   montanita: unsplash('photo-1455729552865-3658a5d39692'),
-  custom: unsplash('photo-1517627043994-b991abb62fc8'),
-  group: unsplash('photo-1544551763-46a013bb70d5'),
+  custom: unsplash('photo-1502680390469-be75c86b636f'),
+  group: unsplash('photo-1455264745730-cb3b76250ae8'),
 };
 
 export const ui: Record<Lang, Copy> = {

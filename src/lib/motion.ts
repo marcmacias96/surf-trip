@@ -123,7 +123,12 @@ export function initMotion() {
   initNav();
 
   gsap.matchMedia().add(
-    { isDesktop: '(min-width: 1024px)', reduceMotion: '(prefers-reduced-motion: reduce)' },
+    {
+      isDesktop: '(min-width: 1024px)',
+      // gsap.matchMedia only runs the callback when at least one condition matches.
+      isMobile: '(max-width: 1023px)',
+      reduceMotion: '(prefers-reduced-motion: reduce)',
+    },
     (context) => {
       const { isDesktop, reduceMotion } = context.conditions as {
         isDesktop: boolean;
