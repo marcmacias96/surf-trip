@@ -17,16 +17,16 @@ const t = useTranslations(lang);
     </h2>
 
     <div class="relative mt-12">
-      <div
-        data-pilot-line
-        class="absolute left-0 top-0 h-full w-px bg-orange lg:h-px lg:w-full"
-        aria-hidden="true"
-      >
-      </div>
-      <ol class="grid border-l border-line lg:grid-cols-4 lg:border-l-0 lg:border-t">
+      <ol data-pilot-steps class="grid border-l border-line lg:grid-cols-4 lg:border-l-0 lg:border-t">
         {
           t.pilot.steps.map((step, index) => (
             <li class="relative border-b border-line py-6 pl-8 lg:border-b-0 lg:border-r lg:px-5 lg:pb-10 lg:pt-8 lg:nth-[4n]:border-r-0 lg:nth-[n+5]:border-t">
+              {/* One progress segment per step: left edge on phones, top edge on desktop, filled in order 1 to 8. */}
+              <span
+                data-pilot-line
+                class="absolute left-[-1px] top-0 h-full w-px bg-orange lg:left-0 lg:top-[-1px] lg:h-px lg:w-full"
+                aria-hidden="true"
+              />
               <span
                 data-pilot-dot
                 class="absolute left-[-4px] top-7 block h-[9px] w-[9px] bg-orange lg:left-5 lg:top-[-4px]"

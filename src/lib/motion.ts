@@ -136,16 +136,18 @@ function initFadeUps() {
 }
 
 function initPilot() {
-  const section = q('[data-pilot]');
-  if (!section) return;
-  const scrollTrigger = { trigger: section, start: 'top 70%', end: 'bottom 70%', scrub: true };
-  gsap.to(q('[data-pilot-line]', section), { scaleX: 1, scaleY: 1, ease: 'none', scrollTrigger });
-  gsap.to(all('[data-pilot-dot]', section), {
-    opacity: 1,
-    scale: 1,
-    ease: 'none',
-    stagger: 0.12,
-    scrollTrigger,
+  const steps = q('[data-pilot-steps]');
+  if (!steps) return;
+  const segments = all('[data-pilot-line]', steps);
+  const dots = all('[data-pilot-dot]', steps);
+  // Fill each step's segment in reading order so progress runs 1 to 8 across both desktop rows.
+  const timeline = gsap.timeline({
+    scrollTrigger: { trigger: steps, start: 'top 75%', end: 'bottom 55%', scrub: true },
+  });
+  segments.forEach((segment, index) => {
+    timeline
+      .to(segment, { scaleX: 1, scaleY: 1, ease: 'none', duration: 1 }, index)
+      .to(dots[index], { opacity: 1, scale: 1, ease: 'none', duration: 0.3 }, index);
   });
 }
 
