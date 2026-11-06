@@ -40,3 +40,8 @@ Strategy: single-pr. Work-unit commits on `main` (repo was empty; branch policy 
 ## Next
 - Real photos/video into the `data-asset-slot` images; real contact email in Contact.astro (`TODO(content)`).
 - Set `site` in astro.config.mjs, push and deploy.
+
+## Direction change (2026-11-06)
+User rejected the WSL editorial direction (main) and a coastal-magazine comp. Approved direction: **radical road trip** (comp: public/comp-radical.html). Themes: radical, transport + surf, surf trip. Work continues on branch `design/radical-roadtrip`.
+- [ ] T4 Restyle all components to the radical road-trip direction (tokens, fonts, layouts, motion personality). Route: delegated writer.
+- [ ] T5 Verify in browser, remove the comp file, commit.

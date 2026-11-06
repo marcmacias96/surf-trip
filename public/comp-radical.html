@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Comp · Radical road trip</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{--asphalt:#141414;--bone:#EFE8D8;--orange:#FF5A1F;--sea:#15A3A3;--line:#2A2A2A}
+  *{box-sizing:border-box;margin:0}
+  body{background:var(--asphalt);color:var(--bone);font-family:"Bricolage Grotesque",system-ui,sans-serif;font-size:17px;line-height:1.5}
+  .mono{font-family:"Space Mono",monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+  .wrap{max-width:1400px;margin:0 auto;padding:0 clamp(20px,4vw,56px)}
+  nav{display:flex;justify-content:space-between;align-items:center;padding:22px 0;border-bottom:1px solid var(--line)}
+  nav .mark{font-weight:800;font-size:18px;letter-spacing:-.02em;text-transform:uppercase}
+  nav ul{display:flex;gap:24px;list-style:none}
+  .btn{display:inline-block;background:var(--orange);color:var(--asphalt);padding:12px 18px;font-weight:800;text-transform:uppercase;letter-spacing:.02em;text-decoration:none;transform:rotate(-1.5deg)}
+  .hero{position:relative;padding:48px 0 0;overflow:hidden}
+  .hero h1{font-size:clamp(4.2rem,13.5vw,15rem);font-weight:800;line-height:.82;letter-spacing:-.04em;text-transform:uppercase;font-variation-settings:"opsz" 96,"wdth" 100}
+  .hero h1 .ghost{color:transparent;-webkit-text-stroke:2px var(--bone)}
+  .hero h1 .hot{color:var(--orange)}
+  .hero .sub{display:flex;gap:32px;flex-wrap:wrap;margin:28px 0 40px;color:#B9B2A3}
+  .heropic{position:relative;margin-top:16px}
+  .heropic img{width:100%;height:68vh;min-height:420px;object-fit:cover;display:block;filter:contrast(1.08) saturate(1.1)}
+  .tag{position:absolute;background:var(--bone);color:var(--asphalt);padding:8px 12px;font-weight:700}
+  .tag.t1{top:-18px;left:6%;transform:rotate(-6deg)}
+  .tag.t2{top:40px;right:5%;transform:rotate(4deg);background:var(--orange)}
+  .tag.t3{bottom:28px;left:10%;transform:rotate(2deg);background:var(--sea);color:var(--asphalt)}
+  .strip{overflow:hidden;background:var(--orange);color:var(--asphalt);padding:12px 0;font-weight:800;text-transform:uppercase;white-space:nowrap;font-size:22px;border-top:4px solid var(--bone);border-bottom:4px solid var(--bone)}
+  .strip span{margin-right:48px}
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);border-bottom:1px solid var(--line)}
+  .stats div{padding:40px 0;border-right:1px solid var(--line)}
+  .stats div:last-child{border-right:0}
+  .stats b{display:block;font-size:clamp(2.6rem,6vw,5.5rem);font-weight:800;line-height:1;letter-spacing:-.04em}
+  .stats b em{color:var(--orange);font-style:normal}
+  .manifest{padding:96px 0}
+  .manifest h2{font-size:clamp(2.4rem,5.5vw,5rem);font-weight:800;line-height:.9;letter-spacing:-.03em;text-transform:uppercase;max-width:14ch}
+  .manifest h2 span{color:var(--sea)}
+  table{width:100%;border-collapse:collapse;margin-top:48px}
+  th{text-align:left;padding:0 0 14px;color:#8E877A;border-bottom:1px dashed #444}
+  td{padding:22px 0;border-bottom:1px dashed #444;vertical-align:middle}
+  td.n{color:var(--orange);font-weight:700;width:64px}
+  td.s{font-size:clamp(1.4rem,2.6vw,2.4rem);font-weight:800;text-transform:uppercase;letter-spacing:-.02em}
+  td.k{text-align:right;white-space:nowrap}
+  tr:hover td{background:#1A1A1A}
+  .transport{display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:4px solid var(--bone)}
+  .transport img{width:100%;height:100%;min-height:480px;object-fit:cover;display:block}
+  .transport .txt{padding:64px clamp(24px,4vw,64px);background:var(--bone);color:var(--asphalt)}
+  .transport h2{font-size:clamp(2.4rem,5vw,4.6rem);font-weight:800;line-height:.9;letter-spacing:-.03em;text-transform:uppercase}
+  .transport ul{list-style:none;margin-top:32px;display:grid;gap:14px}
+  .transport li{display:flex;gap:14px;align-items:baseline}
+  .transport li::before{content:"";width:28px;height:4px;background:var(--orange);flex:none;transform:translateY(-4px)}
+  .cta{padding:120px 0;text-align:left}
+  .cta h2{font-size:clamp(3rem,10vw,10rem);font-weight:800;line-height:.85;letter-spacing:-.04em;text-transform:uppercase}
+  .cta h2 .ghost{color:transparent;-webkit-text-stroke:2px var(--bone)}
+  footer{padding:32px 0;border-top:1px solid var(--line);display:flex;justify-content:space-between;color:#8E877A}
+  @media (max-width:900px){nav ul{display:none}.stats{grid-template-columns:1fr}.stats div{border-right:0;border-bottom:1px solid var(--line)}.transport{grid-template-columns:1fr}.transport img{min-height:320px}th:nth-child(3),td:nth-child(3){display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <span class="mark">Radical Marino</span>
+    <ul class="mono"><li>Route</li><li>Transport</li><li>Trips</li><li>Partners</li><li>EN / ES</li></ul>
+    <a class="btn" href="#">Get in the van</a>
+  </nav>
+
+  <section class="hero">
+    <p class="mono" style="color:var(--orange);margin-bottom:18px">Surf trips · Manta, Ecuador · Boards on the roof</p>
+    <h1><span class="ghost">Find</span> your<br>wave<span class="hot">.</span></h1>
+    <div class="sub mono">
+      <span>01 — 6 stops, 145 km of coast</span>
+      <span>02 — up to 4 surfers per van</span>
+      <span>03 — we drive, you surf</span>
+    </div>
+    <div class="heropic">
+      <img src="https://images.unsplash.com/photo-1527786356703-4b100091cd2c?auto=format&fit=crop&w=1600&q=70" alt="">
+      <span class="tag mono t1">Depart Manta 05:30</span>
+      <span class="tag mono t2">Radical</span>
+      <span class="tag mono t3">Boards · Wax · Fuel</span>
+    </div>
+  </section>
+</div>
+
+<div class="strip"><span>Manta → Santa Marianita → San Mateo → Puerto Cayo → Ayampe → Montañita → Olón →</span><span>Manta → Santa Marianita → San Mateo → Puerto Cayo → Ayampe → Montañita → Olón →</span></div>
+
+<div class="wrap">
+  <section class="stats">
+    <div><b><em>6</em> stops</b><span class="mono">One base. One road.</span></div>
+    <div><b><em>145</em> km</b><span class="mono">Manta to Olón, approx.</span></div>
+    <div><b><em>4</em> max</b><span class="mono">Surfers per departure</span></div>
+  </section>
+
+  <section class="manifest">
+    <h2>The route is the <span>trip.</span></h2>
+    <table class="mono">
+      <thead><tr><th>#</th><th>Stop</th><th>What's there</th><th>From Manta</th></tr></thead>
+      <tbody>
+        <tr><td class="n">01</td><td class="s">Manta</td><td>Logistics hub · departure</td><td class="k">0 km</td></tr>
+        <tr><td class="n">02</td><td class="s">Santa Marianita</td><td>Wind, water sports</td><td class="k">20 km</td></tr>
+        <tr><td class="n">03</td><td class="s">San Mateo</td><td>Point break · fishing village</td><td class="k">12 km</td></tr>
+        <tr><td class="n">04</td><td class="s">Puerto Cayo</td><td>Quiet beaches · nature</td><td class="k">70 km</td></tr>
+        <tr><td class="n">05</td><td class="s">Ayampe</td><td>Beach break · surf town</td><td class="k">110 km</td></tr>
+        <tr><td class="n">06</td><td class="s">Montañita / Olón</td><td>Point + long beach · nightlife</td><td class="k">140 km</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="transport">
+    <img src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=1200&q=70" alt="">
+    <div class="txt">
+      <p class="mono" style="margin-bottom:16px">Transport &amp; logistics</p>
+      <h2>We drive.<br>You surf.</h2>
+      <ul>
+        <li>Van, boards and gear from the Manta hub</li>
+        <li>Routes change with the swell, not the schedule</li>
+        <li>Private or shared rooms, full board</li>
+        <li>Local instructors and crew on every stop</li>
+      </ul>
+      <p style="margin-top:36px"><a class="btn" href="#">Plan your trip</a></p>
+    </div>
+  </section>
+
+  <section class="cta">
+    <p class="mono" style="color:var(--orange);margin-bottom:20px">Open to partners · agencies · brands</p>
+    <h2>Get in<br><span class="ghost">the van.</span></h2>
+  </section>
+  <footer class="mono"><span>Radical Marino — Surf Trips Ecuador</span><span>Hub: Manta, Manabí</span></footer>
+</div>
+</body>
+</html>
