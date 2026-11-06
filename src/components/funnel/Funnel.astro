@@ -1,0 +1,808 @@
+---
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { languages, type Lang } from '../../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+// TODO(content): swap for the final Radical Marino video
+const VIDEO = { src: '/video/funnel-placeholder.mp4', poster: '/video/funnel-poster.jpg' };
+
+interface Choice {
+  value: string;
+  hint?: string;
+}
+
+interface FunnelCopy {
+  back: string;
+  videoTitle: string;
+  rec: string;
+  sound: string;
+  play: string;
+  pause: string;
+  playVideo: string;
+  pauseVideo: string;
+  cta: string;
+  locked: string;
+  skip: string;
+  formTitle: string;
+  intro: string;
+  optional: string;
+  fields: {
+    name: string;
+    country: string;
+    whatsapp: string;
+    email: string;
+    people: string;
+    tripType: string;
+    arrival: string;
+    departure: string;
+    level: string;
+    boards: string;
+    message: string;
+  };
+  peopleHelp: string;
+  whatsappHelp: string;
+  tripTypes: Choice[];
+  levels: string[];
+  boardOptions: string[];
+  errors: {
+    name: string;
+    country: string;
+    whatsapp: string;
+    people: string;
+    tripType: string;
+    arrival: string;
+    departure: string;
+    level: string;
+    boards: string;
+  };
+  submit: string;
+  privacy: string;
+  greeting: string;
+}
+
+const copy: Record<Lang, FunnelCopy> = {
+  en: {
+    back: 'Back to the trip',
+    videoTitle: 'Watch the trip, then book your spot',
+    rec: 'REC · Manta → Ayampe',
+    sound: 'Sound',
+    play: 'Play',
+    pause: 'Pause',
+    playVideo: 'Play video',
+    pauseVideo: 'Pause video',
+    cta: 'Book my spot',
+    locked: 'Unlocks when the video ends',
+    skip: 'Skip video',
+    formTitle: 'Tell us about your trip',
+    intro: 'A few details and we open WhatsApp with your request written out. You send it, we reply with dates and a plan.',
+    optional: 'optional',
+    fields: {
+      name: 'Full name',
+      country: 'Country',
+      whatsapp: 'WhatsApp number',
+      email: 'Email',
+      people: 'People',
+      tripType: 'Trip type',
+      arrival: 'Arrival date',
+      departure: 'Departure date',
+      level: 'Surf level',
+      boards: 'Boards',
+      message: 'Message',
+    },
+    peopleHelp: '4 in the cab, up to 8 with the canopy',
+    whatsappHelp: 'With country code, e.g. +34 600 000 000',
+    tripTypes: [
+      { value: 'Custom surf trip', hint: 'Your dates, your spots, just your crew.' },
+      { value: 'Group surf trip', hint: 'Join a shared departure with other surfers.' },
+    ],
+    levels: ['Beginner', 'Intermediate', 'Advanced'],
+    boardOptions: ['I bring my own', 'I need to rent'],
+    errors: {
+      name: 'Tell us your name.',
+      country: 'Tell us where you are coming from.',
+      whatsapp: 'Add the number with its country code, starting with +.',
+      people: 'Choose how many people are coming.',
+      tripType: 'Choose a trip type.',
+      arrival: 'Pick an arrival date from today on.',
+      departure: 'Departure has to be on or after arrival.',
+      level: 'Choose your surf level.',
+      boards: 'Tell us about boards.',
+    },
+    submit: 'Send on WhatsApp',
+    privacy: 'Nothing is stored on this site. Your details only travel in the WhatsApp message you send.',
+    greeting: 'Hi Radical Marino, I want to book a surf trip.',
+  },
+  es: {
+    back: 'Volver al viaje',
+    videoTitle: 'Mira el viaje y reserva tu lugar',
+    rec: 'REC · Manta → Ayampe',
+    sound: 'Sonido',
+    play: 'Reproducir',
+    pause: 'Pausa',
+    playVideo: 'Reproducir video',
+    pauseVideo: 'Pausar video',
+    cta: 'Reserva tu lugar',
+    locked: 'Se activa al terminar el video',
+    skip: 'Saltar video',
+    formTitle: 'Cuéntanos de tu viaje',
+    intro: 'Unos pocos datos y abrimos WhatsApp con tu solicitud ya escrita. Tú la envías y te respondemos con fechas y un plan.',
+    optional: 'opcional',
+    fields: {
+      name: 'Nombre completo',
+      country: 'País',
+      whatsapp: 'Número de WhatsApp',
+      email: 'Email',
+      people: 'Personas',
+      tripType: 'Tipo de viaje',
+      arrival: 'Llegada',
+      departure: 'Salida',
+      level: 'Nivel',
+      boards: 'Tablas',
+      message: 'Mensaje',
+    },
+    peopleHelp: '4 en cabina, hasta 8 con la carpa',
+    whatsappHelp: 'Con código de país, por ejemplo +34 600 000 000',
+    tripTypes: [
+      { value: 'Surf trip a medida', hint: 'Tus fechas, tus spots, solo tu grupo.' },
+      { value: 'Surf trip en grupo', hint: 'Súmate a una salida compartida con otros surfistas.' },
+    ],
+    levels: ['Principiante', 'Intermedio', 'Avanzado'],
+    boardOptions: ['Llevo la mía', 'Necesito alquilar'],
+    errors: {
+      name: 'Escribe tu nombre.',
+      country: 'Indica desde qué país vienes.',
+      whatsapp: 'Añade el número con su código de país, empezando por +.',
+      people: 'Elige cuántas personas vienen.',
+      tripType: 'Elige un tipo de viaje.',
+      arrival: 'Elige una fecha de llegada desde hoy.',
+      departure: 'La salida tiene que ser igual o posterior a la llegada.',
+      level: 'Elige tu nivel.',
+      boards: 'Indícanos qué pasa con las tablas.',
+    },
+    submit: 'Enviar por WhatsApp',
+    privacy: 'Este sitio no guarda nada. Tus datos solo viajan en el mensaje de WhatsApp que tú envías.',
+    greeting: 'Hola Radical Marino, quiero reservar un surf trip.',
+  },
+};
+
+const { lang } = Astro.props;
+const t = copy[lang];
+const home = getRelativeLocaleUrl(lang);
+// Strings the client script needs; field labels double as message line labels.
+const clientCopy = {
+  lang,
+  locked: t.locked,
+  play: t.play,
+  pause: t.pause,
+  playVideo: t.playVideo,
+  pauseVideo: t.pauseVideo,
+  greeting: t.greeting,
+  labels: t.fields,
+};
+const people = Array.from({ length: 8 }, (_, i) => i + 1);
+---
+
+<div data-funnel data-copy={JSON.stringify(clientCopy)} class="min-h-svh overflow-x-clip bg-asphalt text-bone">
+  <header class="container-x flex min-h-16 items-center justify-between gap-4 pt-[env(safe-area-inset-top)] lg:min-h-20">
+    <a href={home} class="whitespace-nowrap font-display text-sm font-extrabold uppercase tracking-[-0.02em] lg:text-lg">
+      Radical Marino
+    </a>
+    <div class="flex items-center gap-4 md:gap-6">
+      <ul class="flex items-center gap-4" aria-label={lang === 'es' ? 'Idioma' : 'Language'}>
+        {
+          (Object.keys(languages) as Lang[]).map((code) => (
+            <li>
+              <a
+                href={getRelativeLocaleUrl(code, 'book')}
+                aria-current={code === lang ? 'page' : undefined}
+                class:list={['link-underline', code === lang ? 'text-bone' : 'text-muted']}
+              >
+                {languages[code]}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <a href={home} class="link-underline whitespace-nowrap"><span class="sm:hidden" aria-hidden="true">←&nbsp;</span><span class="max-sm:sr-only">{t.back}</span></a>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Step 1: the hook video. -->
+    <section data-step="1" aria-labelledby="funnel-video-title" class="container-x pb-16 pt-4 lg:pt-2">
+      <h1 id="funnel-video-title" class="sr-only">{t.videoTitle}</h1>
+
+      <div class="relative mx-auto w-full sm:w-[min(calc(64svh*16/9),100%)]">
+        <div data-funnel-frame class="relative">
+          <div
+            class="relative aspect-[4/5] overflow-hidden rounded-[clamp(14px,2vw,28px)] border-[clamp(6px,1vw,12px)] border-bone bg-line max-sm:max-h-[68svh] sm:aspect-video"
+          >
+            <video
+              data-funnel-video
+              src={VIDEO.src}
+              poster={VIDEO.poster}
+              muted
+              playsinline
+              preload="auto"
+              class="h-full w-full object-cover"
+            ></video>
+            <button
+              type="button"
+              data-funnel-bigplay
+              class="display absolute left-1/2 top-1/2 min-h-11 -translate-x-1/2 -translate-y-1/2 -rotate-2 bg-orange px-8 py-5 text-[clamp(1.5rem,4vw,3rem)] text-asphalt"
+            >
+              {t.play}
+            </button>
+            <div
+              data-funnel-progress
+              class="pointer-events-none absolute inset-x-0 bottom-0 h-1.5 origin-left scale-x-0 bg-orange"
+              aria-hidden="true"
+            >
+            </div>
+          </div>
+
+          <!-- Reflective tape corners, like the red/white strip on the truck. -->
+          <span class="tape pointer-events-none absolute -right-5 -top-2 h-6 w-24 rotate-[38deg] sm:-right-7 sm:h-7 sm:w-32" aria-hidden="true"></span>
+          <span class="tape pointer-events-none absolute -bottom-2 -left-5 h-6 w-24 rotate-[38deg] sm:-left-7 sm:h-7 sm:w-32" aria-hidden="true"></span>
+
+          <span data-funnel-pop data-rot="-4" class="tag z-10 -left-2 -top-4 flex items-center gap-2 sm:-left-5" style="transform: rotate(-4deg)">
+            <span class="inline-block h-2 w-2 rounded-full bg-orange" aria-hidden="true"></span>{t.rec}
+          </span>
+          <span data-funnel-pop data-rot="3" class="tag z-10 -right-2 top-10 bg-orange sm:-right-4" style="transform: rotate(3deg)">
+            Radical Marino
+          </span>
+          <span
+            data-funnel-pop
+            data-rot="-2"
+            data-funnel-timecode
+            class="tag bottom-5 left-3 z-10 tabular-nums sm:left-5"
+            style="transform: rotate(-2deg)"
+            aria-hidden="true">00:00 / 00:14</span
+          >
+
+          <div data-funnel-pop data-rot="2" class="absolute bottom-4 right-3 z-10 flex gap-2 sm:right-5" style="transform: rotate(2deg)">
+            <button
+              type="button"
+              data-funnel-sound
+              aria-pressed="false"
+              class="mono min-h-11 min-w-11 bg-bone px-3 font-bold text-asphalt aria-pressed:bg-orange"
+            >
+              {t.sound}
+            </button>
+            <button
+              type="button"
+              data-funnel-toggle
+              aria-label={t.playVideo}
+              class="mono min-h-11 min-w-11 bg-bone px-3 font-bold text-asphalt"
+            >
+              {t.play}
+            </button>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          data-funnel-cta
+          aria-disabled="true"
+          class="funnel-cta btn mt-10 block w-full px-6 py-5 text-center lg:py-7"
+        >
+          <span class="display block text-[clamp(1.5rem,4vw,3rem)]">{t.cta}</span>
+          <span data-funnel-cta-lock class="mono mt-2 block">{t.locked} · 0:14</span>
+        </button>
+
+        <p class="mt-4 text-center">
+          <button type="button" data-funnel-skip hidden class="link-underline text-muted-light">{t.skip}</button>
+        </p>
+      </div>
+    </section>
+
+    <!-- Step 2: the booking form. -->
+    <section data-step="2" hidden aria-labelledby="funnel-form-title" class="container-x pb-24 pt-8 lg:pt-12">
+      <div class="mx-auto max-w-3xl">
+        <h1 id="funnel-form-title" tabindex="-1" class="display text-[clamp(2.4rem,6vw,4.5rem)] focus:outline-none">
+          {t.formTitle}
+        </h1>
+        <p class="mt-5 max-w-[60ch] text-muted-light">{t.intro}</p>
+
+        <form data-funnel-form novalidate class="mt-12 grid gap-x-6 gap-y-8 sm:grid-cols-2">
+          <div class="field">
+            <label for="f-name" class="mono text-muted-light">{t.fields.name}</label>
+            <input id="f-name" name="name" required autocomplete="name" class="input" />
+            <p class="field-error">{t.errors.name}</p>
+          </div>
+
+          <div class="field">
+            <label for="f-country" class="mono text-muted-light">{t.fields.country}</label>
+            <input id="f-country" name="country" required autocomplete="country-name" class="input" />
+            <p class="field-error">{t.errors.country}</p>
+          </div>
+
+          <div class="field">
+            <label for="f-whatsapp" class="mono text-muted-light">{t.fields.whatsapp}</label>
+            <input
+              id="f-whatsapp"
+              name="whatsapp"
+              type="tel"
+              required
+              autocomplete="tel"
+              inputmode="tel"
+              pattern={'\\+[0-9 ]{7,20}'}
+              aria-describedby="f-whatsapp-help"
+              class="input"
+            />
+            <p id="f-whatsapp-help" class="mt-2 text-sm text-muted">{t.whatsappHelp}</p>
+            <p class="field-error">{t.errors.whatsapp}</p>
+          </div>
+
+          <div class="field">
+            <label for="f-email" class="mono text-muted-light">{t.fields.email} · {t.optional}</label>
+            <input id="f-email" name="email" type="email" autocomplete="email" class="input" />
+          </div>
+
+          <div class="field sm:col-span-2">
+            <label for="f-people" class="mono text-muted-light">{t.fields.people}</label>
+            <select id="f-people" name="people" required aria-describedby="f-people-help" class="input sm:max-w-[16rem]">
+              <option value="" selected disabled>—</option>
+              {people.map((n) => <option value={String(n)}>{n}</option>)}
+            </select>
+            <p id="f-people-help" class="mt-2 text-sm text-muted">{t.peopleHelp}</p>
+            <p class="field-error">{t.errors.people}</p>
+          </div>
+
+          <fieldset class="field sm:col-span-2">
+            <legend class="mono text-muted-light">{t.fields.tripType}</legend>
+            <div class="mt-3 grid gap-3 sm:grid-cols-2">
+              {
+                t.tripTypes.map((option) => (
+                  <label class="choice choice-card">
+                    <input type="radio" name="tripType" value={option.value} required class="sr-only" />
+                    <span class="display block text-2xl">{option.value}</span>
+                    <span class="choice-hint mt-2 block text-sm">{option.hint}</span>
+                  </label>
+                ))
+              }
+            </div>
+            <p class="field-error">{t.errors.tripType}</p>
+          </fieldset>
+
+          <div class="field">
+            <label for="f-arrival" class="mono text-muted-light">{t.fields.arrival}</label>
+            <input id="f-arrival" name="arrival" type="date" required class="input" />
+            <p class="field-error">{t.errors.arrival}</p>
+          </div>
+
+          <div class="field">
+            <label for="f-departure" class="mono text-muted-light">{t.fields.departure} · {t.optional}</label>
+            <input id="f-departure" name="departure" type="date" class="input" />
+            <p class="field-error">{t.errors.departure}</p>
+          </div>
+
+          <fieldset class="field sm:col-span-2">
+            <legend class="mono text-muted-light">{t.fields.level}</legend>
+            <div class="mt-3 flex flex-wrap gap-3">
+              {
+                t.levels.map((level) => (
+                  <label class="choice choice-chip">
+                    <input type="radio" name="level" value={level} required class="sr-only" />
+                    {level}
+                  </label>
+                ))
+              }
+            </div>
+            <p class="field-error">{t.errors.level}</p>
+          </fieldset>
+
+          <fieldset class="field sm:col-span-2">
+            <legend class="mono text-muted-light">{t.fields.boards}</legend>
+            <div class="mt-3 flex flex-wrap gap-3">
+              {
+                t.boardOptions.map((option) => (
+                  <label class="choice choice-chip">
+                    <input type="radio" name="boards" value={option} required class="sr-only" />
+                    {option}
+                  </label>
+                ))
+              }
+            </div>
+            <p class="field-error">{t.errors.boards}</p>
+          </fieldset>
+
+          <div class="field sm:col-span-2">
+            <label for="f-message" class="mono text-muted-light">{t.fields.message} · {t.optional}</label>
+            <textarea id="f-message" name="message" rows="4" class="input py-3"></textarea>
+          </div>
+
+          <div class="sm:col-span-2">
+            <button type="submit" class="btn inline-flex w-full items-center justify-center gap-3 px-6 py-5 text-[clamp(1.25rem,3vw,2rem)] sm:w-auto">
+              <svg viewBox="0 0 24 24" class="h-[1.1em] w-[1.1em] shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3.6 20.4l1.2-4.1A8.6 8.6 0 1 1 8 19.3z" />
+                <path d="M9.2 8.3c.1 3.5 3 6.4 6.5 6.5l1-1.5-2-1.1-.9.8a5 5 0 0 1-2.4-2.4l.8-.9-1.1-2z" />
+              </svg>
+              {t.submit}
+            </button>
+            <p class="mt-5 max-w-[60ch] text-sm text-muted">{t.privacy}</p>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+</div>
+
+<style>
+  .tape {
+    background: repeating-linear-gradient(-45deg, var(--color-orange) 0 10px, var(--color-bone) 10px 20px);
+  }
+
+  /* Locked CTA: dimmed, and the hover/press motion of .btn stays off. */
+  .funnel-cta[aria-disabled='true'] {
+    opacity: 0.45;
+    cursor: not-allowed;
+    transform: rotate(-1.5deg);
+  }
+
+  .input {
+    display: block;
+    width: 100%;
+    min-height: 3rem;
+    margin-top: 0.6rem;
+    padding: 0 1rem;
+    border: 1px solid var(--color-muted);
+    background: transparent;
+    color: var(--color-bone);
+    color-scheme: dark;
+    font-size: 1.0625rem;
+    caret-color: var(--color-orange);
+  }
+
+  .input:focus-visible {
+    outline: 2px solid var(--color-orange);
+    outline-offset: 0;
+    border-color: var(--color-orange);
+  }
+
+  .input:user-invalid {
+    border-color: var(--color-orange);
+  }
+
+  select.input option {
+    background: var(--color-asphalt);
+  }
+
+  .field {
+    min-width: 0;
+  }
+
+  .field-error {
+    display: none;
+    margin-top: 0.5rem;
+    color: var(--color-orange);
+    font-family: var(--font-mono);
+    font-size: 13px;
+  }
+
+  .field:has(:user-invalid) .field-error {
+    display: block;
+  }
+
+  .choice {
+    display: flex;
+    cursor: pointer;
+    border: 1px solid var(--color-muted);
+    transition:
+      background-color 160ms var(--ease-out-strong),
+      color 160ms var(--ease-out-strong);
+  }
+
+  .choice-card {
+    flex-direction: column;
+    padding: 1.1rem 1.25rem;
+  }
+
+  .choice-chip {
+    min-height: 2.75rem;
+    align-items: center;
+    padding: 0 1.1rem;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .choice-hint {
+    color: var(--color-muted-light);
+  }
+
+  .choice:has(:checked) {
+    background: var(--color-orange);
+    border-color: var(--color-orange);
+    color: var(--color-asphalt);
+  }
+
+  .choice:has(:checked) .choice-hint {
+    color: var(--color-asphalt);
+  }
+
+  .choice:has(:focus-visible) {
+    outline: 2px solid var(--color-orange);
+    outline-offset: 2px;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .choice:hover {
+      border-color: var(--color-bone);
+    }
+  }
+
+  /* Entrance starting state; only when JS runs and motion is allowed. */
+  :global(.js) [data-funnel-frame],
+  :global(.js) [data-funnel-pop] {
+    opacity: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(.js) [data-funnel-frame],
+    :global(.js) [data-funnel-pop] {
+      opacity: 1;
+    }
+
+    .choice {
+      transition-duration: 1ms;
+    }
+  }
+</style>
+
+<script>
+  import gsap from 'gsap';
+
+  // TODO(content): confirm the booking WhatsApp number (taken from the truck lettering)
+  const WHATSAPP_NUMBER = '593980520531';
+  const SKIP_AFTER_S = 10;
+  const FAILSAFE_MS = 4000;
+
+  interface ClientCopy {
+    lang: string;
+    locked: string;
+    play: string;
+    pause: string;
+    playVideo: string;
+    pauseVideo: string;
+    greeting: string;
+    labels: Record<string, string>;
+  }
+
+  const root = document.querySelector<HTMLElement>('[data-funnel]');
+
+  if (root) {
+    const c = JSON.parse(root.dataset.copy ?? '{}') as ClientCopy;
+    const $ = <T extends Element>(selector: string) => root.querySelector<T>(selector)!;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const step1 = $<HTMLElement>('[data-step="1"]');
+    const step2 = $<HTMLElement>('[data-step="2"]');
+    const video = $<HTMLVideoElement>('[data-funnel-video]');
+    const frame = $<HTMLElement>('[data-funnel-frame]');
+    const bigPlay = $<HTMLButtonElement>('[data-funnel-bigplay]');
+    const progress = $<HTMLElement>('[data-funnel-progress]');
+    const timecode = $<HTMLElement>('[data-funnel-timecode]');
+    const soundButton = $<HTMLButtonElement>('[data-funnel-sound]');
+    const toggleButton = $<HTMLButtonElement>('[data-funnel-toggle]');
+    const cta = $<HTMLButtonElement>('[data-funnel-cta]');
+    const ctaLock = $<HTMLElement>('[data-funnel-cta-lock]');
+    const skip = $<HTMLButtonElement>('[data-funnel-skip]');
+    const heading = $<HTMLElement>('#funnel-form-title');
+    const form = $<HTMLFormElement>('[data-funnel-form]');
+    const arrival = $<HTMLInputElement>('#f-arrival');
+    const departure = $<HTMLInputElement>('#f-departure');
+
+    const pad = (n: number) => String(Math.floor(n)).padStart(2, '0');
+    const clock = (s: number) => `${pad(s / 60)}:${pad(s % 60)}`;
+    const duration = () => (Number.isFinite(video.duration) && video.duration > 0 ? video.duration : 14);
+
+    let locked = true;
+    let started = false;
+    let raf = 0;
+
+    // ---------- Step 1: playback UI ----------
+
+    const render = () => {
+      const now = video.currentTime;
+      const total = duration();
+      progress.style.transform = `scaleX(${Math.min(now / total, 1)})`;
+      timecode.textContent = `${clock(now)} / ${clock(total)}`;
+      if (locked) {
+        const left = Math.max(Math.ceil(total - now), 0);
+        ctaLock.textContent = `${c.locked} · ${Math.floor(left / 60)}:${pad(left % 60)}`;
+        if (now >= SKIP_AFTER_S && skip.hidden) {
+          skip.hidden = false;
+          if (!reduceMotion) gsap.fromTo(skip, { opacity: 0 }, { opacity: 1, duration: 0.4, ease: 'expo.out' });
+        }
+      }
+    };
+
+    const loop = () => {
+      render();
+      if (!video.paused && !video.ended) raf = requestAnimationFrame(loop);
+    };
+
+    const syncToggle = () => {
+      const playing = !video.paused && !video.ended;
+      toggleButton.textContent = playing ? c.pause : c.play;
+      toggleButton.setAttribute('aria-label', playing ? c.pauseVideo : c.playVideo);
+    };
+
+    const unlock = (pop: boolean) => {
+      if (!locked) return;
+      locked = false;
+      cta.removeAttribute('aria-disabled');
+      ctaLock.hidden = true;
+      skip.hidden = true;
+      if (pop && !reduceMotion) {
+        gsap.fromTo(
+          cta,
+          { scale: 0.94, rotation: -4 },
+          { scale: 1, rotation: -1.5, duration: 0.6, ease: 'back.out(2)', clearProps: 'transform' },
+        );
+      }
+    };
+
+    video.addEventListener('playing', () => {
+      started = true;
+      bigPlay.hidden = true;
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(loop);
+    });
+    video.addEventListener('play', syncToggle);
+    video.addEventListener('pause', syncToggle);
+    video.addEventListener('loadedmetadata', render);
+    video.addEventListener('seeked', render);
+    video.addEventListener('error', () => unlock(false));
+    video.addEventListener('ended', () => {
+      syncToggle();
+      render();
+      const focusIsFree = !document.activeElement || document.activeElement === document.body;
+      unlock(true);
+      if (focusIsFree && !step1.hidden) cta.focus();
+    });
+
+    const togglePlay = () => {
+      if (video.paused || video.ended) video.play().catch(() => unlock(false));
+      else video.pause();
+    };
+    toggleButton.addEventListener('click', togglePlay);
+    bigPlay.addEventListener('click', togglePlay);
+    soundButton.addEventListener('click', () => {
+      video.muted = !video.muted;
+      soundButton.setAttribute('aria-pressed', String(!video.muted));
+    });
+
+    // ---------- Steps ----------
+
+    const showStep = (step: 1 | 2, animate: boolean) => {
+      const [from, to] = step === 2 ? [step1, step2] : [step2, step1];
+      if (!to.hidden) return;
+      if (step === 2) video.pause();
+      const swap = () => {
+        from.hidden = true;
+        to.hidden = false;
+        window.scrollTo(0, 0);
+        if (step === 2) heading.focus();
+        if (animate) gsap.fromTo(to, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.5, ease: 'expo.out', clearProps: 'all' });
+      };
+      if (!animate || reduceMotion) {
+        animate = false;
+        swap();
+        return;
+      }
+      gsap.to(from, { opacity: 0, y: -16, duration: 0.25, ease: 'expo.out', clearProps: 'all', onComplete: swap });
+    };
+
+    cta.addEventListener('click', () => {
+      if (locked) return;
+      history.pushState({ step: 2 }, '', '#form');
+      showStep(2, true);
+    });
+    skip.addEventListener('click', () => {
+      unlock(false);
+      history.pushState({ step: 2 }, '', '#form');
+      showStep(2, true);
+    });
+    window.addEventListener('popstate', () => showStep(location.hash === '#form' ? 2 : 1, true));
+
+    // ---------- Start ----------
+
+    const pops = root.querySelectorAll<HTMLElement>('[data-funnel-pop]');
+
+    if (location.hash === '#form') {
+      gsap.set([frame, ...pops], { opacity: 1 });
+      unlock(false);
+      showStep(2, false);
+    } else {
+      if (!reduceMotion) {
+        // Autoplay is driven from here (no autoplay attribute) so reduced motion never starts it.
+        bigPlay.hidden = true;
+        video.play().catch(() => {
+          bigPlay.hidden = false;
+        });
+        gsap
+          .timeline({ defaults: { ease: 'expo.out' } })
+          .fromTo(frame, { scale: 0.96, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.8 })
+          .fromTo(
+            pops,
+            {
+              opacity: 0,
+              scale: 0.85,
+              rotation: (_: number, el: HTMLElement) => Number(el.dataset.rot) + 10,
+            },
+            {
+              opacity: 1,
+              scale: 1,
+              rotation: (_: number, el: HTMLElement) => Number(el.dataset.rot),
+              duration: 0.55,
+              ease: 'back.out(1.7)',
+              stagger: 0.08,
+            },
+            0.3,
+          );
+      }
+      // Fail-safe: a broken or blocked video never traps anyone behind the lock.
+      if (video.error) unlock(false);
+      window.setTimeout(() => {
+        if (!started) unlock(false);
+      }, FAILSAFE_MS);
+    }
+
+    // ---------- Step 2: form ----------
+
+    const isoDay = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+    arrival.min = isoDay(new Date());
+    departure.min = arrival.min;
+    arrival.addEventListener('change', () => {
+      departure.min = arrival.value || arrival.min;
+    });
+
+    const dateFormat = new Intl.DateTimeFormat(c.lang, { dateStyle: 'long' });
+    const formatDate = (value: string) => dateFormat.format(new Date(`${value}T00:00:00`));
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      if (!form.reportValidity()) return;
+
+      const data = new FormData(form);
+      const value = (name: string) => String(data.get(name) ?? '').trim();
+      const fields: [keyof typeof c.labels, string][] = [
+        ['name', value('name')],
+        ['country', value('country')],
+        ['whatsapp', value('whatsapp')],
+        ['email', value('email')],
+        ['people', value('people')],
+        ['tripType', value('tripType')],
+        ['arrival', value('arrival') && formatDate(value('arrival'))],
+        ['departure', value('departure') && formatDate(value('departure'))],
+        ['level', value('level')],
+        ['boards', value('boards')],
+        ['message', value('message')],
+      ];
+      const lines = fields.filter(([, v]) => v).map(([key, v]) => `${c.labels[key]}: ${v}`);
+      const text = `${c.greeting}\n\n${lines.join('\n')}`;
+      const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
+
+      if (window.matchMedia('(pointer: coarse)').matches) {
+        window.location.href = url;
+        return;
+      }
+      // window.open with 'noopener' always returns null, so open a blank tab,
+      // cut the opener by hand, then navigate it. A blocked popup falls back to this tab.
+      const tab = window.open('', '_blank');
+      if (tab) {
+        tab.opener = null;
+        tab.location.href = url;
+      } else {
+        window.location.href = url;
+      }
+    });
+  }
+</script>
