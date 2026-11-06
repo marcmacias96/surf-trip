@@ -175,7 +175,7 @@ export const ui: Record<Lang, Copy> = {
       label: 'Surf trips · Manta, Ecuador · Boards on the roof',
       title: { ghost: 'Find', line1: 'your', line2: 'wave' },
       lines: ['Discover Ecuador.', 'Find your wave.', 'Live the experience.'],
-      subLines: ['6 stops, 145 km of coast', 'up to 4 surfers per trip', 'we drive, you surf'],
+      subLines: ['6 stops, 145 km of coast', '4 to 8 surfers per trip', 'we drive, you surf'],
       stickers: ['Depart Manta 05:30', 'Radical', 'Boards · Wax · Fuel'],
       intro:
         'Small-group surf trips along the Pacific coast of Manabí. We handle the logistics. You surf.',
@@ -200,7 +200,7 @@ export const ui: Record<Lang, Copy> = {
     stats: [
       { value: '6', unit: 'stops', caption: 'One base. One road.' },
       { value: '145', unit: 'km', caption: 'Manta to Olón, approx.' },
-      { value: '4', unit: 'max', caption: 'Surfers per departure' },
+      { value: '8', unit: 'max', caption: '4 in the cab, up to 8 with the canopy on' },
     ],
     manifesto: {
       label: 'Why we do this',
@@ -367,7 +367,7 @@ export const ui: Record<Lang, Copy> = {
       title: 'Two ways to travel',
       intro:
         'Pick a trip built around you, or join a pre-organized itinerary. Either way, the group stays small.',
-      capacity: 'Up to 4 participants per departure',
+      capacity: '4 participants in the cab, up to 8 with the canopy on',
       modalities: [
         {
           title: 'Custom surf trips',
@@ -495,7 +495,7 @@ export const ui: Record<Lang, Copy> = {
       label: 'Surf trips · Manta, Ecuador · Tablas en el techo',
       title: { ghost: 'Encuentra', line1: 'tu', line2: 'ola' },
       lines: ['Descubre Ecuador.', 'Encuentra tu ola.', 'Vive la experiencia.'],
-      subLines: ['6 paradas, 145 km de costa', 'hasta 4 surfistas por viaje', 'nosotros conducimos, tú surfeas'],
+      subLines: ['6 paradas, 145 km de costa', 'de 4 a 8 surfistas por viaje', 'nosotros conducimos, tú surfeas'],
       stickers: ['Salida Manta 05:30', 'Radical', 'Tablas · Cera · Gasolina'],
       intro:
         'Surf trips en grupos pequeños por la costa del Pacífico de Manabí. Nosotros nos ocupamos de la logística. Tú surfeas.',
@@ -520,7 +520,7 @@ export const ui: Record<Lang, Copy> = {
     stats: [
       { value: '6', unit: 'paradas', caption: 'Una base. Una carretera.' },
       { value: '145', unit: 'km', caption: 'De Manta a Olón, aprox.' },
-      { value: '4', unit: 'máx.', caption: 'Surfistas por salida' },
+      { value: '8', unit: 'máx.', caption: '4 en cabina, hasta 8 con la carpa puesta' },
     ],
     manifesto: {
       label: 'Por qué lo hacemos',
@@ -687,7 +687,7 @@ export const ui: Record<Lang, Copy> = {
       title: 'Dos formas de viajar',
       intro:
         'Elige un viaje diseñado a tu medida o súmate a un itinerario ya organizado. En ambos casos, el grupo es pequeño.',
-      capacity: 'Hasta 4 participantes por salida',
+      capacity: '4 participantes en cabina, hasta 8 con la carpa puesta',
       modalities: [
         {
           title: 'Surf trips personalizados',

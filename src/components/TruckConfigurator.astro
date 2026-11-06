@@ -36,9 +36,10 @@ const copy: Record<Lang, TruckCopy> = {
     },
     specs: {
       surf: [
-        { label: 'Surfers in the back', value: '4' },
+        { label: 'Per departure', value: '8', unit: 'max' },
+        { label: 'In the cab', value: '4' },
+        { label: 'Under the canopy', value: '4' },
         { label: 'Boards on the rack', value: '6' },
-        { label: 'Crew in the cab', value: '2' },
       ],
       cargo: [
         { label: 'Payload', value: '800', unit: 'kg' },
@@ -47,7 +48,7 @@ const copy: Record<Lang, TruckCopy> = {
       ],
     },
     hint: {
-      surf: 'Canopy on, seats in. Four surfers ride covered and the boards go on the rack.',
+      surf: 'Canopy on, seats in. Four ride in the cab and four more under the canopy, up to eight per departure, with the boards on the rack.',
       cargo: 'Canopy off. An open bed for gear, moves and freight along the same coast.',
     },
     bedDims: 'Bed 2.0 × 1.5 m · approx.',
@@ -63,9 +64,10 @@ const copy: Record<Lang, TruckCopy> = {
     },
     specs: {
       surf: [
-        { label: 'Surfistas atrás', value: '4' },
+        { label: 'Por salida', value: '8', unit: 'máx.' },
+        { label: 'En cabina', value: '4' },
+        { label: 'Bajo la carpa', value: '4' },
         { label: 'Tablas en la parrilla', value: '6' },
-        { label: 'Equipo en cabina', value: '2' },
       ],
       cargo: [
         { label: 'Carga útil', value: '800', unit: 'kg' },
@@ -74,7 +76,7 @@ const copy: Record<Lang, TruckCopy> = {
       ],
     },
     hint: {
-      surf: 'Carpa puesta, asientos adentro. Cuatro surfistas viajan cubiertos y las tablas van en la parrilla.',
+      surf: 'Carpa puesta, asientos adentro. Cuatro van en cabina y cuatro más bajo la carpa, hasta ocho por salida, con las tablas en la parrilla.',
       cargo: 'Sin carpa. Una caja abierta para equipo, mudanzas y fletes por la misma costa.',
     },
     bedDims: 'Caja 2,0 × 1,5 m · aprox.',
