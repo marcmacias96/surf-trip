@@ -31,6 +31,7 @@ export interface Stop {
 interface Modality {
   title: string;
   description: string;
+  cta: string;
   image: ImageSlot;
 }
 
@@ -66,6 +67,8 @@ interface Copy {
     stickers: [string, string, string];
     intro: string;
     cta: string;
+    book: string;
+    seeRoute: string;
     scroll: string;
     image: ArtDirectedImage;
   };
@@ -79,6 +82,8 @@ interface Copy {
     distanceLabel: string;
     headers: { index: string; stop: string; info: string; distance: string };
     stops: Stop[];
+    ctaLine: string;
+    cta: string;
   };
   transport: {
     label: string;
@@ -112,6 +117,7 @@ interface Copy {
     cta: string;
     secondary: string;
   };
+  bookBar: { line: string; cta: string };
   footer: { hub: string; smallPrint: string };
 }
 
@@ -180,6 +186,8 @@ export const ui: Record<Lang, Copy> = {
       intro:
         'Small-group surf trips along the Pacific coast of Manabí. We handle the logistics. You surf.',
       cta: 'Get in the truck',
+      book: 'Book my spot',
+      seeRoute: 'See the route',
       scroll: 'Scroll',
       image: {
         mobile: {
@@ -336,6 +344,8 @@ export const ui: Record<Lang, Copy> = {
           },
         },
       ],
+      ctaLine: 'Six stops, one truck, your dates.',
+      cta: 'Ride this route',
     },
     transport: {
       label: 'Transport & logistics',
@@ -373,6 +383,7 @@ export const ui: Record<Lang, Copy> = {
           title: 'Custom surf trips',
           description:
             'For individuals, couples and small groups. Dates, stops and pace shaped around your level and your time.',
+          cta: 'Book a custom trip',
           image: {
             ...images.custom,
             alt: 'Surfboards lined up on the sand',
@@ -384,6 +395,7 @@ export const ui: Record<Lang, Copy> = {
           title: 'Group surf trips',
           description:
             'Pre-organized itineraries with fixed dates along the full route. Join a small crew and share the trip.',
+          cta: 'Join a group trip',
           image: {
             ...images.group,
             alt: 'Group of surfers watching the waves from the beach',
@@ -469,6 +481,7 @@ export const ui: Record<Lang, Copy> = {
       cta: 'Book my spot',
       secondary: 'Back to top',
     },
+    bookBar: { line: '4–8 surfers · from Manta', cta: 'Book' },
     footer: {
       hub: 'Hub: Manta, Manabí – Ecuador',
       smallPrint: 'Radical Marino — Surf trips Ecuador',
@@ -500,6 +513,8 @@ export const ui: Record<Lang, Copy> = {
       intro:
         'Surf trips en grupos pequeños por la costa del Pacífico de Manabí. Nosotros nos ocupamos de la logística. Tú surfeas.',
       cta: 'Súbete a la camioneta',
+      book: 'Reserva tu lugar',
+      seeRoute: 'Ver la ruta',
       scroll: 'Desplázate',
       image: {
         mobile: {
@@ -656,6 +671,8 @@ export const ui: Record<Lang, Copy> = {
           },
         },
       ],
+      ctaLine: 'Seis paradas, una camioneta, tus fechas.',
+      cta: 'Haz esta ruta',
     },
     transport: {
       label: 'Transporte y logística',
@@ -693,6 +710,7 @@ export const ui: Record<Lang, Copy> = {
           title: 'Surf trips personalizados',
           description:
             'Para personas, parejas y grupos pequeños. Fechas, paradas y ritmo adaptados a tu nivel y a tu tiempo.',
+          cta: 'Reserva un viaje a medida',
           image: {
             ...images.custom,
             alt: 'Tablas de surf alineadas sobre la arena',
@@ -704,6 +722,7 @@ export const ui: Record<Lang, Copy> = {
           title: 'Surf trips grupales',
           description:
             'Itinerarios preorganizados con fechas fijas a lo largo de toda la ruta. Súmate a un grupo pequeño y comparte el viaje.',
+          cta: 'Súmate a un viaje grupal',
           image: {
             ...images.group,
             alt: 'Grupo de surfistas observando las olas desde la playa',
@@ -789,6 +808,7 @@ export const ui: Record<Lang, Copy> = {
       cta: 'Reserva tu lugar',
       secondary: 'Volver arriba',
     },
+    bookBar: { line: '4–8 surfistas · desde Manta', cta: 'Reservar' },
     footer: {
       hub: 'Hub: Manta, Manabí – Ecuador',
       smallPrint: 'Radical Marino — Surf trips Ecuador',

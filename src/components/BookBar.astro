@@ -1,0 +1,45 @@
+---
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { useTranslations, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<!-- Mobile-only booking bar. Hidden while the hero or the contact section is on screen. -->
+<div data-book-bar class="book-bar lg:hidden" aria-hidden="true" inert>
+  <div class="container-x flex items-center justify-between gap-4">
+    <p class="mono text-muted-light">{t.bookBar.line}</p>
+    <a
+      href={getRelativeLocaleUrl(lang, 'book')}
+      class="btn inline-flex min-h-11 shrink-0 items-center px-4"
+    >
+      {t.bookBar.cta}
+    </a>
+  </div>
+</div>
+
+<script>
+  const bar = document.querySelector<HTMLElement>('[data-book-bar]');
+  const blockers = ['[data-hero]', '[data-contact]']
+    .map((selector) => document.querySelector(selector))
+    .filter((el): el is Element => el !== null);
+
+  if (bar && blockers.length) {
+    const onScreen = new Set<Element>();
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) =>
+        entry.isIntersecting ? onScreen.add(entry.target) : onScreen.delete(entry.target),
+      );
+      const show = onScreen.size === 0;
+      bar.classList.toggle('is-visible', show);
+      bar.inert = !show;
+      bar.setAttribute('aria-hidden', String(!show));
+    });
+    blockers.forEach((el) => observer.observe(el));
+  }
+</script>

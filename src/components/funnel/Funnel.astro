@@ -600,6 +600,11 @@ const people = Array.from({ length: 8 }, (_, i) => i + 1);
     const arrival = $<HTMLInputElement>('#f-arrival');
     const departure = $<HTMLInputElement>('#f-departure');
 
+    // Landing CTAs pass ?trip=custom|group; radios render custom first, group second.
+    const tripIndex = ['custom', 'group'].indexOf(new URLSearchParams(location.search).get('trip') ?? '');
+    const tripRadio = root.querySelectorAll<HTMLInputElement>('input[name="tripType"]')[tripIndex];
+    if (tripRadio) tripRadio.checked = true;
+
     const pad = (n: number) => String(Math.floor(n)).padStart(2, '0');
     const clock = (s: number) => `${pad(s / 60)}:${pad(s % 60)}`;
     const duration = () => (Number.isFinite(video.duration) && video.duration > 0 ? video.duration : 14);

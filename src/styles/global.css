@@ -300,6 +300,34 @@
   @apply bg-asphalt;
 }
 
+/* Mobile booking bar: slides up from the bottom edge between the hero and the contact section. */
+.book-bar {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 40;
+  padding-top: 12px;
+  padding-bottom: max(12px, env(safe-area-inset-bottom));
+  transform: translateY(100%);
+  opacity: 0;
+  transition:
+    transform 250ms var(--ease-out-strong),
+    opacity 250ms var(--ease-out-strong);
+  @apply border-t border-line bg-asphalt;
+}
+
+.book-bar.is-visible {
+  transform: none;
+  opacity: 1;
+}
+
+/* Keep the footer clear of the bar on screens where it can show (below lg). */
+@media (max-width: 1023.98px) {
+  body:has(.book-bar) {
+    padding-bottom: calc(70px + env(safe-area-inset-bottom));
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .js [data-line],
   .js [data-fade],
@@ -324,7 +352,8 @@
   .btn,
   .link-underline::after,
   .skip-link,
-  .nav {
+  .nav,
+  .book-bar {
     transition-duration: 1ms;
   }
 }

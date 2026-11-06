@@ -1,4 +1,5 @@
 ---
+import { getRelativeLocaleUrl } from 'astro:i18n';
 import { useTranslations, type Lang } from '../i18n/ui';
 
 interface Props {
@@ -37,7 +38,8 @@ const stickerClasses = [
     </h1>
 
     <div class="lg:-mt-28 lg:grid lg:grid-cols-12 lg:gap-x-8">
-    <ul class="mono mt-7 flex flex-wrap gap-x-8 gap-y-2 text-muted-light lg:col-span-2 lg:mt-0 lg:flex-col lg:gap-y-3 lg:self-end lg:pb-8">
+    <div class="relative z-10 lg:col-span-2 lg:self-end lg:pb-8">
+    <ul class="mono mt-7 flex flex-wrap gap-x-8 gap-y-2 text-muted-light lg:mt-0 lg:flex-col lg:gap-y-3">
       {
         t.hero.subLines.map((line, index) => (
           <li data-fade>
@@ -46,6 +48,11 @@ const stickerClasses = [
         ))
       }
     </ul>
+    <div class="mt-7 flex flex-wrap items-center gap-x-8 gap-y-3 lg:mt-8 lg:flex-col lg:items-start">
+      <a href={getRelativeLocaleUrl(lang, 'book')} class="btn whitespace-nowrap px-7 py-4 text-base lg:px-5 lg:text-sm xl:px-7 xl:text-base">{t.hero.book}</a>
+      <a href="#route" class="link-underline">{t.hero.seeRoute}</a>
+    </div>
+    </div>
 
     <div data-hero-pic class="relative mt-10 lg:col-span-10 lg:mt-0">
       <!-- Portrait photo in a 4/5 box on phones, the landscape sunset in a 3/2 box from md. -->

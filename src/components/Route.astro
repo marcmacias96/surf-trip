@@ -1,4 +1,5 @@
 ---
+import { getRelativeLocaleUrl } from 'astro:i18n';
 import { useTranslations, type Lang } from '../i18n/ui';
 
 interface Props {
@@ -115,6 +116,14 @@ const slots = [
             ))
           }
         </div>
+      </div>
+
+      <div
+        data-fade
+        class="mt-10 flex flex-wrap items-center justify-between gap-x-8 gap-y-5 lg:col-start-1 lg:row-start-2"
+      >
+        <p class="mono text-muted-light">{t.route.ctaLine}</p>
+        <a href={getRelativeLocaleUrl(lang, 'book')} class="btn">{t.route.cta}</a>
       </div>
     </div>
   </div>

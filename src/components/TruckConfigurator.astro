@@ -1,4 +1,5 @@
 ---
+import { getRelativeLocaleUrl } from 'astro:i18n';
 import type { Lang } from '../i18n/ui';
 
 interface Props {
@@ -22,6 +23,7 @@ interface TruckCopy {
   hint: Record<Mode, string>;
   bedDims: string;
   note: string;
+  cta: string;
 }
 
 // TODO(content): payload, bed size, board count and volume are typical values for this class of light truck; confirm with the operator.
@@ -53,6 +55,7 @@ const copy: Record<Lang, TruckCopy> = {
     },
     bedDims: 'Bed 2.0 × 1.5 m · approx.',
     note: 'Figures are approximate.',
+    cta: 'Book for up to 8',
   },
   es: {
     label: 'Transporte y logística · la camioneta',
@@ -81,6 +84,7 @@ const copy: Record<Lang, TruckCopy> = {
     },
     bedDims: 'Caja 2,0 × 1,5 m · aprox.',
     note: 'Cifras aproximadas.',
+    cta: 'Reserva para hasta 8',
   },
 };
 
@@ -219,6 +223,9 @@ const t = copy[lang];
 
         <p data-truck-hint class="mt-6 text-muted-light">{t.hint.surf}</p>
         <p class="mono mt-3 text-muted">{t.note}</p>
+        <p data-fade class="mt-8">
+          <a href={getRelativeLocaleUrl(lang, 'book')} class="btn">{t.cta}</a>
+        </p>
       </div>
     </div>
   </div>

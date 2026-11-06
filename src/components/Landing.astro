@@ -12,6 +12,7 @@ import Partners from './Partners.astro';
 import Pilot from './Pilot.astro';
 import Contact from './Contact.astro';
 import Footer from './Footer.astro';
+import BookBar from './BookBar.astro';
 
 interface Props {
   lang: Lang;
@@ -34,3 +35,4 @@ const { lang } = Astro.props;
   <Contact lang={lang} />
 </main>
 <Footer lang={lang} />
+<BookBar lang={lang} />
