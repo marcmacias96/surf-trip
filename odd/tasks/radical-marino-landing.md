@@ -18,9 +18,9 @@ The competitor (ecuadorsurftravel.com) is static, sells a single base (Ayampe), 
 - Artifacts (code, comments, identifiers) in English. Site copy EN/ES.
 
 ## Tasks
-- [ ] T1 Foundations: design tokens, fonts, Layout with Lenis+GSAP bootstrap, i18n config and translations module, EN/ES index pages. Route: delegated writer (writer trigger: 2+ non-trivial files).
-- [ ] T2 Sections with motion: all sections listed in scope, bilingual, reduced-motion fallbacks. Route: delegated writer (same worker as T1).
-- [ ] T3 Verification: `pnpm build` green, browser check at desktop and mobile widths, reduced-motion check, design finish review. Route: parent + verifier agent.
+- [x] T1 Foundations: design tokens, fonts, Layout with Lenis+GSAP bootstrap, i18n config and translations module, EN/ES index pages. Route: delegated writer (writer trigger: 2+ non-trivial files).
+- [x] T2 Sections with motion: all sections listed in scope, bilingual, reduced-motion fallbacks. Route: delegated writer (same worker as T1).
+- [x] T3 Verification: `pnpm build` green, browser check at desktop and mobile widths, reduced-motion check, design finish review. Route: parent + verifier agent.
 
 ## Checks
 - `pnpm build` exits 0.
@@ -33,3 +33,10 @@ Strategy: single-pr. Work-unit commits on `main` (repo was empty; branch policy 
 
 ## Progress
 - 2026-11-06: scaffold committed (63866cc). Research done (WSL tokens, awwwards patterns, competitor gaps).
+- 2026-11-06: T1+T2 delivered by one writer (dbc58a8). Browser check found that the gsap.matchMedia callback never ran on mobile because no condition matched; fixed with an always-matching `isMobile` condition, scuba placeholders swapped for surf photos (8544601).
+- 2026-11-06: Design finish review returned 12 items; applied 8 (4073c0e): headline clamps, route h3 scale and padding, anchor offset -80 + scroll-padding-top, nav gradient, ink-500 numerals, focus-visible outside hover query, scrub: true, mt-14. Deliberately skipped: hero light line (WSL 700/300 pairing is intended), self-hosted fonts, tracking token, nav color transition.
+- Verified: `pnpm build` green; `/` and `/es/` render all sections at 1440 and 375; pinned route only on desktop; no console errors. Not verified in a browser: `prefers-reduced-motion` (CSS path only); `hreflang` host needs `site` in astro.config.mjs.
+
+## Next
+- Real photos/video into the `data-asset-slot` images; real contact email in Contact.astro (`TODO(content)`).
+- Set `site` in astro.config.mjs, push and deploy.
