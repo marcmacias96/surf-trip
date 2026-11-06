@@ -43,5 +43,11 @@ Strategy: single-pr. Work-unit commits on `main` (repo was empty; branch policy 
 
 ## Direction change (2026-11-06)
 User rejected the WSL editorial direction (main) and a coastal-magazine comp. Approved direction: **radical road trip** (comp: public/comp-radical.html). Themes: radical, transport + surf, surf trip. Work continues on branch `design/radical-roadtrip`.
-- [ ] T4 Restyle all components to the radical road-trip direction (tokens, fonts, layouts, motion personality). Route: delegated writer.
-- [ ] T5 Verify in browser, remove the comp file, commit.
+- [x] T4 Restyle all components to the radical road-trip direction (tokens, fonts, layouts, motion personality). Route: delegated writer.
+- [x] T5 Verify in browser, remove the comp file, commit.
+
+## Audit + mobile-first (2026-11-06)
+Impeccable audit before fixes: detector 0 findings; browser pass found ES hero overflow at 375px, 81px nav with wrapping wordmark/CTA, 16px language and back-to-top targets, 12px mono labels, no responsive images, landscape photos cropped in portrait boxes. Score before: A11y 3 · Perf 2 · Responsive 2 · Theming 4 · Integrity 4 = 15/20.
+- [x] T6 Mobile-first adaptation: fluid display scale, 64px nav with short CTA, 44px hit areas via `.link-underline`, 13px mono base, `srcset`/`sizes` with 640/1024/1600 WebP, `<picture>` art direction (portrait photos on phones), safe areas, font CSS preload. (3b2033a)
+- [x] T7 Truck configurator: `TruckConfigurator.astro` with the real truck cutout (`truck-body.webp`) and AI-generated photoreal layers in `public/images/cfg/` (canopy roof, surfers, boards, cargo; z_image model, 4 × ~0.1 credit), GSAP entrance + mode timelines, pointer tilt on fine pointers, scroll tilt on touch, reduced-motion fallback. Copy lives inside the component (EN/ES) and numbers are marked `TODO(content)`.
+- Not verified: `prefers-reduced-motion` in a real browser; real payload/bed figures; contact email/phone (0980520531 appears on the truck, unconfirmed).

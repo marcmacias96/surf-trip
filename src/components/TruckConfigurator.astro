@@ -21,7 +21,6 @@ interface TruckCopy {
   specs: Record<Mode, Spec[]>;
   hint: Record<Mode, string>;
   bedDims: string;
-  canopyText: string;
   note: string;
 }
 
@@ -33,7 +32,7 @@ const copy: Record<Lang, TruckCopy> = {
     modes: { surf: 'Surf mode', cargo: 'Cargo mode' },
     svgTitle: {
       surf: 'Radical Marino double-cab truck with the canopy on, four surfers seated in the back and boards on the rack',
-      cargo: 'Radical Marino double-cab truck with an open bed loaded with cargo boxes',
+      cargo: 'Radical Marino double-cab truck with an open bed loaded with boxes, bags and a cooler',
     },
     specs: {
       surf: [
@@ -52,7 +51,6 @@ const copy: Record<Lang, TruckCopy> = {
       cargo: 'Canopy off. An open bed for gear, moves and freight along the same coast.',
     },
     bedDims: 'Bed 2.0 × 1.5 m · approx.',
-    canopyText: 'Radical Marino',
     note: 'Figures are approximate.',
   },
   es: {
@@ -61,7 +59,7 @@ const copy: Record<Lang, TruckCopy> = {
     modes: { surf: 'Modo surf', cargo: 'Modo carga' },
     svgTitle: {
       surf: 'Camioneta doble cabina de Radical Marino con la carpa puesta, cuatro surfistas sentados atrás y tablas en la parrilla',
-      cargo: 'Camioneta doble cabina de Radical Marino con la caja abierta cargada con bultos',
+      cargo: 'Camioneta doble cabina de Radical Marino con la caja abierta cargada con cajas, bolsos y una hielera',
     },
     specs: {
       surf: [
@@ -80,24 +78,21 @@ const copy: Record<Lang, TruckCopy> = {
       cargo: 'Sin carpa. Una caja abierta para equipo, mudanzas y fletes por la misma costa.',
     },
     bedDims: 'Caja 2,0 × 1,5 m · aprox.',
-    canopyText: 'Radical Marino',
     note: 'Cifras aproximadas.',
   },
 };
 
 const { lang } = Astro.props;
 const t = copy[lang];
-const surfers = [
-  { x: 760, skin: '#C98A5A', shirt: '#FF5A1F' },
-  { x: 940, skin: '#8A5A3C', shirt: '#15A3A3' },
-  { x: 1120, skin: '#E0B58C', shirt: '#EFE8D8' },
-  { x: 1300, skin: '#B07850', shirt: '#FF5A1F' },
-];
 ---
 
 <section
   id="truck"
   data-truck
+  data-hint-surf={t.hint.surf}
+  data-hint-cargo={t.hint.cargo}
+  data-title-surf={t.svgTitle.surf}
+  data-title-cargo={t.svgTitle.cargo}
   class="border-t border-line bg-asphalt py-24 lg:py-32"
   aria-labelledby="truck-title"
 >
@@ -109,78 +104,74 @@ const surfers = [
 
     <div class="mt-12 grid gap-10 lg:mt-16 lg:grid-cols-12 lg:items-center lg:gap-14">
       <div class="lg:col-span-7">
-        <div data-truck-stage class="relative aspect-[1555/820] [perspective:1400px]">
+        <div data-truck-stage class="relative aspect-[1555/880] [perspective:1400px]">
           <svg
             data-truck-svg
-            viewBox="0 -140 1555 820"
+            viewBox="0 -200 1555 880"
             class="absolute inset-0 h-full w-full overflow-visible [transform-style:preserve-3d]"
             role="img"
             aria-labelledby="truck-svg-title"
           >
             <title id="truck-svg-title" data-truck-svg-title>{t.svgTitle.surf}</title>
             <defs>
-              <clipPath id="truck-bed-clip"><rect x="712" y="-140" width="805" height="382" /></clipPath>
+              <clipPath id="truck-bed-clip"><rect x="700" y="-200" width="830" height="444" /></clipPath>
             </defs>
 
             <ellipse data-truck-shadow cx="780" cy="640" rx="720" ry="16" class="fill-black/60" />
 
-            <g data-truck-cargo clip-path="url(#truck-bed-clip)">
-              <g data-truck-box>
-                <rect x="740" y="110" width="200" height="132" class="fill-[#E6DCC6]" />
-                <rect x="740" y="110" width="200" height="16" class="fill-[#C9BC9E]" />
-                <text x="770" y="192" class="font-mono text-[20px] fill-asphalt">FRAGILE</text>
-              </g>
-              <g data-truck-box>
-                <rect x="960" y="150" width="250" height="92" class="fill-[#DED3B9]" />
-                <rect x="960" y="150" width="250" height="14" class="fill-[#C9BC9E]" />
-              </g>
-              <g data-truck-box>
-                <rect x="1230" y="70" width="230" height="172" class="fill-[#E6DCC6]" />
-                <rect x="1230" y="70" width="230" height="16" class="fill-[#C9BC9E]" />
-                <text x="1262" y="170" class="font-mono text-[20px] fill-asphalt">1.2 m³</text>
-              </g>
-              <g data-truck-box>
-                <rect x="965" y="70" width="150" height="70" class="fill-[#D4C9AE]" />
-              </g>
-            </g>
+            <!-- Cargo sits in the bed, behind the rack bars and the bed wall. -->
+            <image
+              data-truck-cargo
+              clip-path="url(#truck-bed-clip)"
+              href="/images/cfg/cargo.webp"
+              x="718"
+              y="22"
+              width="792"
+              height="226"
+              preserveAspectRatio="xMidYMax meet"
+            />
 
-            <image href="/images/truck-body.png" x="0" y="0" width="1555" height="639" />
+            <!-- Crew sits in the bed; the bed wall hides everything below the rail. -->
+            <image
+              data-truck-crew
+              clip-path="url(#truck-bed-clip)"
+              href="/images/cfg/surfers.webp"
+              x="813"
+              y="38"
+              width="600"
+              height="250"
+              preserveAspectRatio="xMidYMax meet"
+            />
+
+            <image href="/images/truck-body.webp" x="0" y="0" width="1555" height="639" />
 
             <g class="fill-none stroke-muted-light" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
               <path d="M712 242 V30 H1515 V242" />
-              <path d="M712 30 L760 -2 H1470 L1515 30" />
               <path d="M712 135 H1515" />
               <path d="M815 242 V30 M915 242 V30 M1015 242 V30 M1115 242 V30 M1215 242 V30 M1315 242 V30 M1415 242 V30" stroke-width="5" opacity=".65" />
             </g>
 
-            <g data-truck-crew>
-              {surfers.map((s) => (
-                <g data-truck-surfer>
-                  <rect x={s.x - 34} y="178" width="68" height="64" rx="8" class="fill-[#2A2A2A]" />
-                  <circle cx={s.x} cy="152" r="22" fill={s.skin} />
-                  <rect x={s.x - 28} y="172" width="56" height="26" rx="10" fill={s.shirt} />
-                </g>
-              ))}
-            </g>
+            <!-- Canvas roof on the rack; sides stay open so the crew is visible. -->
+            <image
+              data-truck-canopy
+              href="/images/cfg/canopy-roof.webp"
+              x="698"
+              y="-8"
+              width="834"
+              height="104"
+              preserveAspectRatio="none"
+            />
 
-            <g data-truck-canopy>
-              <path d="M706 32 L760 -6 H1470 L1521 32 V52 H706 Z" class="fill-orange" />
-              <path d="M706 52 H1521 V135 H706 Z" class="fill-[#E8491A]" />
-              <text
-                x="1113"
-                y="112"
-                text-anchor="middle"
-                class="font-display text-[52px] font-extrabold uppercase fill-asphalt"
-                letter-spacing="-2"
-              >{t.canopyText}</text>
-            </g>
-
-            <g data-truck-boards>
-              <path data-truck-board d="M770 -40 Q1113 -82 1456 -40 Q1113 -2 770 -40 Z" class="fill-bone stroke-asphalt" stroke-width="3" />
-              <path data-truck-board d="M795 -66 Q1113 -108 1431 -66 Q1113 -30 795 -66 Z" class="fill-sea stroke-asphalt" stroke-width="3" />
-              <path data-truck-board d="M820 -92 Q1113 -134 1406 -92 Q1113 -56 820 -92 Z" class="fill-bone stroke-asphalt" stroke-width="3" />
-              <path d="M770 -40 Q1113 -70 1456 -40" class="fill-none stroke-orange" stroke-width="6" />
-            </g>
+            <!-- Boards strapped on top of the roof. -->
+            <image
+              data-truck-boards
+              href="/images/cfg/boards.webp"
+              x="745"
+              y="-186"
+              width="760"
+              height="197"
+              preserveAspectRatio="xMidYMax meet"
+            />
 
             <g data-truck-dims class="stroke-orange">
               <path data-truck-dims-line d="M712 672 H1515" stroke-width="3" stroke-dasharray="10 8" />
@@ -250,52 +241,39 @@ const surfers = [
     const buttons = Array.from(section.querySelectorAll<HTMLButtonElement>('[data-truck-mode]'));
     const specRows = Array.from(section.querySelectorAll<HTMLElement>('[data-truck-spec]'));
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const hints: Record<Mode, string> = { surf: hint.textContent ?? '', cargo: '' };
-    const titles: Record<Mode, string> = { surf: svgTitle.textContent ?? '', cargo: '' };
+    const hints: Record<Mode, string> = { surf: section.dataset.hintSurf ?? '', cargo: section.dataset.hintCargo ?? '' };
+    const titles: Record<Mode, string> = { surf: section.dataset.titleSurf ?? '', cargo: section.dataset.titleCargo ?? '' };
 
-    // Copy for the cargo state is rendered only once in the DOM, so keep both strings here.
-    const lang = document.documentElement.lang as 'en' | 'es';
-    hints.cargo =
-      lang === 'es'
-        ? 'Sin carpa. Una caja abierta para equipo, mudanzas y fletes por la misma costa.'
-        : 'Canopy off. An open bed for gear, moves and freight along the same coast.';
-    titles.cargo =
-      lang === 'es'
-        ? 'Camioneta doble cabina de Radical Marino con la caja abierta cargada con bultos'
-        : 'Radical Marino double-cab truck with an open bed loaded with cargo boxes';
+    const canopy = q('[data-truck-canopy]');
+    const crew = q('[data-truck-crew]');
+    const boards = q('[data-truck-boards]');
+    const cargo = q('[data-truck-cargo]');
+    const dims = q('[data-truck-dims]');
+    const dimsLine = q('[data-truck-dims-line]');
 
-    gsap.set(q('[data-truck-canopy]'), { transformOrigin: '50% 0%' });
-    gsap.set(q('[data-truck-box]'), { transformOrigin: '50% 100%' });
-    gsap.set(q('[data-truck-surfer]'), { transformOrigin: '50% 100%' });
-    gsap.set(q('[data-truck-dims-line]'), { transformOrigin: '0% 50%' });
-    gsap.set(q('[data-truck-board]'), { transformOrigin: '50% 50%' });
+    gsap.set(canopy, { transformOrigin: '50% 0%' });
+    gsap.set([crew, cargo], { transformOrigin: '50% 100%' });
+    gsap.set(dimsLine, { transformOrigin: '0% 50%' });
+    gsap.set(boards, { transformOrigin: '50% 50%' });
 
     const toSurf = gsap
       .timeline({ paused: true, defaults: { ease: 'expo.out', duration: 0.6 } })
-      .to(q('[data-truck-box]'), { y: 140, opacity: 0, stagger: 0.04, duration: 0.4, ease: 'power2.in' }, 0)
-      .to(q('[data-truck-dims]'), { opacity: 0, duration: 0.3 }, 0)
-      .fromTo(q('[data-truck-surfer]'), { y: 90, opacity: 0 }, { y: 0, opacity: 1, stagger: 0.07, ease: 'back.out(1.4)' }, 0.25)
-      .fromTo(q('[data-truck-canopy]'), { scaleY: 0, opacity: 0 }, { scaleY: 1, opacity: 1, duration: 0.8 }, 0.4)
-      .fromTo(
-        q('[data-truck-board]'),
-        { y: -140, opacity: 0, rotation: -3 },
-        { y: 0, opacity: 1, rotation: 0, duration: 0.9, stagger: { each: 0.08, from: 'end' } },
-        0.75,
-      )
-      .fromTo(q('[data-truck-boards] path:last-child'), { opacity: 0 }, { opacity: 1, duration: 0.4 }, 1.1);
+      .to(cargo, { y: 150, opacity: 0, duration: 0.45, ease: 'power2.in' }, 0)
+      .to(dims, { opacity: 0, duration: 0.3 }, 0)
+      .fromTo(crew, { y: 110, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: 'back.out(1.3)' }, 0.3)
+      .fromTo(canopy, { scaleY: 0, opacity: 0 }, { scaleY: 1, opacity: 1, duration: 0.8 }, 0.45)
+      .fromTo(boards, { y: -160, opacity: 0, rotation: -2.5 }, { y: 0, opacity: 1, rotation: 0, duration: 1 }, 0.8);
 
     const toCargo = gsap
       .timeline({ paused: true, defaults: { ease: 'expo.out', duration: 0.6 } })
-      .to(q('[data-truck-boards] path'), { y: -140, opacity: 0, duration: 0.45, ease: 'power2.in', stagger: 0.04 }, 0)
-      .to(q('[data-truck-canopy]'), { scaleY: 0, opacity: 0, duration: 0.5, ease: 'power2.in' }, 0.15)
-      .to(q('[data-truck-surfer]'), { y: 90, opacity: 0, stagger: 0.05, duration: 0.4, ease: 'power2.in' }, 0.25)
-      .fromTo(q('[data-truck-box]'), { y: 140, opacity: 0 }, { y: 0, opacity: 1, stagger: 0.06, ease: 'back.out(1.1)' }, 0.55)
-      .fromTo(q('[data-truck-dims]'), { opacity: 0 }, { opacity: 1, duration: 0.3 }, 0.95)
-      .fromTo(q('[data-truck-dims-line]'), { scaleX: 0 }, { scaleX: 1, duration: 0.7 }, 0.95);
+      .to(boards, { y: -160, opacity: 0, duration: 0.5, ease: 'power2.in' }, 0)
+      .to(canopy, { scaleY: 0, opacity: 0, duration: 0.5, ease: 'power2.in' }, 0.15)
+      .to(crew, { y: 110, opacity: 0, duration: 0.45, ease: 'power2.in' }, 0.25)
+      .fromTo(cargo, { y: 150, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: 'back.out(1.1)' }, 0.6)
+      .fromTo(dims, { opacity: 0 }, { opacity: 1, duration: 0.3 }, 1)
+      .fromTo(dimsLine, { scaleX: 0 }, { scaleX: 1, duration: 0.7 }, 1);
 
-    gsap.set([q('[data-truck-canopy]'), q('[data-truck-boards] path'), q('[data-truck-surfer]'), q('[data-truck-dims]')], {
-      opacity: 0,
-    });
+    gsap.set([canopy, boards, crew, dims], { opacity: 0 });
 
     let mode: Mode = 'cargo';
 
