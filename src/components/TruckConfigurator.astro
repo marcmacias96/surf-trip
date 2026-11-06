@@ -1,0 +1,395 @@
+---
+import type { Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+type Mode = 'surf' | 'cargo';
+
+interface Spec {
+  label: string;
+  value: string;
+  unit?: string;
+}
+
+interface TruckCopy {
+  label: string;
+  title: [string, string];
+  modes: Record<Mode, string>;
+  svgTitle: Record<Mode, string>;
+  specs: Record<Mode, Spec[]>;
+  hint: Record<Mode, string>;
+  bedDims: string;
+  canopyText: string;
+  note: string;
+}
+
+// TODO(content): payload, bed size, board count and volume are typical values for this class of light truck; confirm with the operator.
+const copy: Record<Lang, TruckCopy> = {
+  en: {
+    label: 'Transport & logistics · the truck',
+    title: ['One truck.', 'Two jobs.'],
+    modes: { surf: 'Surf mode', cargo: 'Cargo mode' },
+    svgTitle: {
+      surf: 'Radical Marino double-cab truck with the canopy on, four surfers seated in the back and boards on the rack',
+      cargo: 'Radical Marino double-cab truck with an open bed loaded with cargo boxes',
+    },
+    specs: {
+      surf: [
+        { label: 'Surfers in the back', value: '4' },
+        { label: 'Boards on the rack', value: '6' },
+        { label: 'Crew in the cab', value: '2' },
+      ],
+      cargo: [
+        { label: 'Payload', value: '800', unit: 'kg' },
+        { label: 'Bed', value: '2.0 × 1.5', unit: 'm' },
+        { label: 'Volume', value: '2.4', unit: 'm³' },
+      ],
+    },
+    hint: {
+      surf: 'Canopy on, seats in. Four surfers ride covered and the boards go on the rack.',
+      cargo: 'Canopy off. An open bed for gear, moves and freight along the same coast.',
+    },
+    bedDims: 'Bed 2.0 × 1.5 m · approx.',
+    canopyText: 'Radical Marino',
+    note: 'Figures are approximate.',
+  },
+  es: {
+    label: 'Transporte y logística · la camioneta',
+    title: ['Una camioneta.', 'Dos trabajos.'],
+    modes: { surf: 'Modo surf', cargo: 'Modo carga' },
+    svgTitle: {
+      surf: 'Camioneta doble cabina de Radical Marino con la carpa puesta, cuatro surfistas sentados atrás y tablas en la parrilla',
+      cargo: 'Camioneta doble cabina de Radical Marino con la caja abierta cargada con bultos',
+    },
+    specs: {
+      surf: [
+        { label: 'Surfistas atrás', value: '4' },
+        { label: 'Tablas en la parrilla', value: '6' },
+        { label: 'Equipo en cabina', value: '2' },
+      ],
+      cargo: [
+        { label: 'Carga útil', value: '800', unit: 'kg' },
+        { label: 'Caja', value: '2,0 × 1,5', unit: 'm' },
+        { label: 'Volumen', value: '2,4', unit: 'm³' },
+      ],
+    },
+    hint: {
+      surf: 'Carpa puesta, asientos adentro. Cuatro surfistas viajan cubiertos y las tablas van en la parrilla.',
+      cargo: 'Sin carpa. Una caja abierta para equipo, mudanzas y fletes por la misma costa.',
+    },
+    bedDims: 'Caja 2,0 × 1,5 m · aprox.',
+    canopyText: 'Radical Marino',
+    note: 'Cifras aproximadas.',
+  },
+};
+
+const { lang } = Astro.props;
+const t = copy[lang];
+const surfers = [
+  { x: 760, skin: '#C98A5A', shirt: '#FF5A1F' },
+  { x: 940, skin: '#8A5A3C', shirt: '#15A3A3' },
+  { x: 1120, skin: '#E0B58C', shirt: '#EFE8D8' },
+  { x: 1300, skin: '#B07850', shirt: '#FF5A1F' },
+];
+---
+
+<section
+  id="truck"
+  data-truck
+  class="border-t border-line bg-asphalt py-24 lg:py-32"
+  aria-labelledby="truck-title"
+>
+  <div class="container-x">
+    <p class="mono text-orange">{t.label}</p>
+    <h2 id="truck-title" class="display mt-4 text-[clamp(2.4rem,6vw,5.5rem)]">
+      {t.title[0]}<br /><span class="text-orange">{t.title[1]}</span>
+    </h2>
+
+    <div class="mt-12 grid gap-10 lg:mt-16 lg:grid-cols-12 lg:items-center lg:gap-14">
+      <div class="lg:col-span-7">
+        <div data-truck-stage class="relative aspect-[1555/820] [perspective:1400px]">
+          <svg
+            data-truck-svg
+            viewBox="0 -140 1555 820"
+            class="absolute inset-0 h-full w-full overflow-visible [transform-style:preserve-3d]"
+            role="img"
+            aria-labelledby="truck-svg-title"
+          >
+            <title id="truck-svg-title" data-truck-svg-title>{t.svgTitle.surf}</title>
+            <defs>
+              <clipPath id="truck-bed-clip"><rect x="712" y="-140" width="805" height="382" /></clipPath>
+            </defs>
+
+            <ellipse data-truck-shadow cx="780" cy="640" rx="720" ry="16" class="fill-black/60" />
+
+            <g data-truck-cargo clip-path="url(#truck-bed-clip)">
+              <g data-truck-box>
+                <rect x="740" y="110" width="200" height="132" class="fill-[#E6DCC6]" />
+                <rect x="740" y="110" width="200" height="16" class="fill-[#C9BC9E]" />
+                <text x="770" y="192" class="font-mono text-[20px] fill-asphalt">FRAGILE</text>
+              </g>
+              <g data-truck-box>
+                <rect x="960" y="150" width="250" height="92" class="fill-[#DED3B9]" />
+                <rect x="960" y="150" width="250" height="14" class="fill-[#C9BC9E]" />
+              </g>
+              <g data-truck-box>
+                <rect x="1230" y="70" width="230" height="172" class="fill-[#E6DCC6]" />
+                <rect x="1230" y="70" width="230" height="16" class="fill-[#C9BC9E]" />
+                <text x="1262" y="170" class="font-mono text-[20px] fill-asphalt">1.2 m³</text>
+              </g>
+              <g data-truck-box>
+                <rect x="965" y="70" width="150" height="70" class="fill-[#D4C9AE]" />
+              </g>
+            </g>
+
+            <image href="/images/truck-body.png" x="0" y="0" width="1555" height="639" />
+
+            <g class="fill-none stroke-muted-light" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M712 242 V30 H1515 V242" />
+              <path d="M712 30 L760 -2 H1470 L1515 30" />
+              <path d="M712 135 H1515" />
+              <path d="M815 242 V30 M915 242 V30 M1015 242 V30 M1115 242 V30 M1215 242 V30 M1315 242 V30 M1415 242 V30" stroke-width="5" opacity=".65" />
+            </g>
+
+            <g data-truck-crew>
+              {surfers.map((s) => (
+                <g data-truck-surfer>
+                  <rect x={s.x - 34} y="178" width="68" height="64" rx="8" class="fill-[#2A2A2A]" />
+                  <circle cx={s.x} cy="152" r="22" fill={s.skin} />
+                  <rect x={s.x - 28} y="172" width="56" height="26" rx="10" fill={s.shirt} />
+                </g>
+              ))}
+            </g>
+
+            <g data-truck-canopy>
+              <path d="M706 32 L760 -6 H1470 L1521 32 V52 H706 Z" class="fill-orange" />
+              <path d="M706 52 H1521 V135 H706 Z" class="fill-[#E8491A]" />
+              <text
+                x="1113"
+                y="112"
+                text-anchor="middle"
+                class="font-display text-[52px] font-extrabold uppercase fill-asphalt"
+                letter-spacing="-2"
+              >{t.canopyText}</text>
+            </g>
+
+            <g data-truck-boards>
+              <path data-truck-board d="M770 -40 Q1113 -82 1456 -40 Q1113 -2 770 -40 Z" class="fill-bone stroke-asphalt" stroke-width="3" />
+              <path data-truck-board d="M795 -66 Q1113 -108 1431 -66 Q1113 -30 795 -66 Z" class="fill-sea stroke-asphalt" stroke-width="3" />
+              <path data-truck-board d="M820 -92 Q1113 -134 1406 -92 Q1113 -56 820 -92 Z" class="fill-bone stroke-asphalt" stroke-width="3" />
+              <path d="M770 -40 Q1113 -70 1456 -40" class="fill-none stroke-orange" stroke-width="6" />
+            </g>
+
+            <g data-truck-dims class="stroke-orange">
+              <path data-truck-dims-line d="M712 672 H1515" stroke-width="3" stroke-dasharray="10 8" />
+              <path d="M712 660 V684 M1515 660 V684" stroke-width="3" />
+              <text x="1113" y="716" text-anchor="middle" class="font-mono text-[22px] uppercase fill-orange" stroke="none">{t.bedDims}</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+
+      <div class="lg:col-span-5">
+        <div class="flex border border-bone" role="group" aria-label={t.label}>
+          {(['surf', 'cargo'] as Mode[]).map((mode) => (
+            <button
+              type="button"
+              data-truck-mode={mode}
+              aria-pressed={mode === 'surf' ? 'true' : 'false'}
+              class="mono min-h-12 flex-1 px-4 font-bold transition-colors duration-200 aria-pressed:bg-orange aria-pressed:text-asphalt"
+            >
+              {t.modes[mode]}
+            </button>
+          ))}
+        </div>
+
+        <dl data-truck-specs class="mt-8 border-t border-dashed border-dash" aria-live="polite">
+          {(['surf', 'cargo'] as Mode[]).map((mode) =>
+            t.specs[mode].map((spec, index) => (
+              <div
+                data-truck-spec={mode}
+                data-index={index}
+                class="flex items-baseline justify-between gap-6 border-b border-dashed border-dash py-4"
+                hidden={mode !== 'surf'}
+              >
+                <dt class="mono text-muted-light">{spec.label}</dt>
+                <dd class="display text-[clamp(1.6rem,3vw,2.6rem)] tabular-nums">
+                  <span data-truck-value data-value={spec.value}>{spec.value}</span>
+                  {spec.unit && <span class="ml-1 text-orange">{spec.unit}</span>}
+                </dd>
+              </div>
+            )),
+          )}
+        </dl>
+
+        <p data-truck-hint class="mt-6 text-muted-light">{t.hint.surf}</p>
+        <p class="mono mt-3 text-muted">{t.note}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import gsap from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  type Mode = 'surf' | 'cargo';
+
+  const section = document.querySelector<HTMLElement>('[data-truck]');
+
+  if (section) {
+    const q = gsap.utils.selector(section);
+    const stage = section.querySelector<HTMLElement>('[data-truck-stage]')!;
+    const svg = section.querySelector<SVGSVGElement>('[data-truck-svg]')!;
+    const svgTitle = section.querySelector<SVGTitleElement>('[data-truck-svg-title]')!;
+    const hint = section.querySelector<HTMLElement>('[data-truck-hint]')!;
+    const buttons = Array.from(section.querySelectorAll<HTMLButtonElement>('[data-truck-mode]'));
+    const specRows = Array.from(section.querySelectorAll<HTMLElement>('[data-truck-spec]'));
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const hints: Record<Mode, string> = { surf: hint.textContent ?? '', cargo: '' };
+    const titles: Record<Mode, string> = { surf: svgTitle.textContent ?? '', cargo: '' };
+
+    // Copy for the cargo state is rendered only once in the DOM, so keep both strings here.
+    const lang = document.documentElement.lang as 'en' | 'es';
+    hints.cargo =
+      lang === 'es'
+        ? 'Sin carpa. Una caja abierta para equipo, mudanzas y fletes por la misma costa.'
+        : 'Canopy off. An open bed for gear, moves and freight along the same coast.';
+    titles.cargo =
+      lang === 'es'
+        ? 'Camioneta doble cabina de Radical Marino con la caja abierta cargada con bultos'
+        : 'Radical Marino double-cab truck with an open bed loaded with cargo boxes';
+
+    gsap.set(q('[data-truck-canopy]'), { transformOrigin: '50% 0%' });
+    gsap.set(q('[data-truck-box]'), { transformOrigin: '50% 100%' });
+    gsap.set(q('[data-truck-surfer]'), { transformOrigin: '50% 100%' });
+    gsap.set(q('[data-truck-dims-line]'), { transformOrigin: '0% 50%' });
+    gsap.set(q('[data-truck-board]'), { transformOrigin: '50% 50%' });
+
+    const toSurf = gsap
+      .timeline({ paused: true, defaults: { ease: 'expo.out', duration: 0.6 } })
+      .to(q('[data-truck-box]'), { y: 140, opacity: 0, stagger: 0.04, duration: 0.4, ease: 'power2.in' }, 0)
+      .to(q('[data-truck-dims]'), { opacity: 0, duration: 0.3 }, 0)
+      .fromTo(q('[data-truck-surfer]'), { y: 90, opacity: 0 }, { y: 0, opacity: 1, stagger: 0.07, ease: 'back.out(1.4)' }, 0.25)
+      .fromTo(q('[data-truck-canopy]'), { scaleY: 0, opacity: 0 }, { scaleY: 1, opacity: 1, duration: 0.8 }, 0.4)
+      .fromTo(
+        q('[data-truck-board]'),
+        { y: -140, opacity: 0, rotation: -3 },
+        { y: 0, opacity: 1, rotation: 0, duration: 0.9, stagger: { each: 0.08, from: 'end' } },
+        0.75,
+      )
+      .fromTo(q('[data-truck-boards] path:last-child'), { opacity: 0 }, { opacity: 1, duration: 0.4 }, 1.1);
+
+    const toCargo = gsap
+      .timeline({ paused: true, defaults: { ease: 'expo.out', duration: 0.6 } })
+      .to(q('[data-truck-boards] path'), { y: -140, opacity: 0, duration: 0.45, ease: 'power2.in', stagger: 0.04 }, 0)
+      .to(q('[data-truck-canopy]'), { scaleY: 0, opacity: 0, duration: 0.5, ease: 'power2.in' }, 0.15)
+      .to(q('[data-truck-surfer]'), { y: 90, opacity: 0, stagger: 0.05, duration: 0.4, ease: 'power2.in' }, 0.25)
+      .fromTo(q('[data-truck-box]'), { y: 140, opacity: 0 }, { y: 0, opacity: 1, stagger: 0.06, ease: 'back.out(1.1)' }, 0.55)
+      .fromTo(q('[data-truck-dims]'), { opacity: 0 }, { opacity: 1, duration: 0.3 }, 0.95)
+      .fromTo(q('[data-truck-dims-line]'), { scaleX: 0 }, { scaleX: 1, duration: 0.7 }, 0.95);
+
+    gsap.set([q('[data-truck-canopy]'), q('[data-truck-boards] path'), q('[data-truck-surfer]'), q('[data-truck-dims]')], {
+      opacity: 0,
+    });
+
+    let mode: Mode = 'cargo';
+
+    const renderSpecs = (next: Mode) => {
+      specRows.forEach((row) => {
+        const belongs = row.dataset.truckSpec === next;
+        row.hidden = !belongs;
+        if (!belongs) return;
+        const value = row.querySelector<HTMLElement>('[data-truck-value]')!;
+        const target = value.dataset.value ?? '';
+        const numeric = Number(target.replace(',', '.'));
+        if (reduceMotion || Number.isNaN(numeric) || /[×x]/.test(target)) {
+          value.textContent = target;
+          return;
+        }
+        const counter = { n: 0 };
+        gsap.to(counter, {
+          n: numeric,
+          duration: 0.8,
+          ease: 'power2.out',
+          onUpdate: () => {
+            value.textContent = String(Math.round(counter.n));
+          },
+          onComplete: () => {
+            value.textContent = target;
+          },
+        });
+      });
+      gsap.fromTo(
+        specRows.filter((row) => !row.hidden),
+        { y: 12, opacity: 0 },
+        { y: 0, opacity: 1, duration: reduceMotion ? 0 : 0.45, stagger: reduceMotion ? 0 : 0.06, ease: 'expo.out' },
+      );
+    };
+
+    const setMode = (next: Mode) => {
+      if (next === mode) return;
+      mode = next;
+      buttons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.truckMode === next)));
+      const timeline = next === 'surf' ? toSurf : toCargo;
+      if (reduceMotion) {
+        timeline.progress(1);
+      } else {
+        timeline.restart();
+      }
+      hint.textContent = hints[next];
+      svgTitle.textContent = titles[next];
+      renderSpecs(next);
+    };
+
+    buttons.forEach((button) => button.addEventListener('click', () => setMode(button.dataset.truckMode as Mode)));
+
+    // Entrance: the truck rolls in once, then the canopy goes on.
+    const entrance = () => {
+      if (reduceMotion) {
+        setMode('surf');
+        return;
+      }
+      gsap
+        .timeline({ defaults: { ease: 'expo.out' } })
+        .fromTo(svg, { x: -120, opacity: 0 }, { x: 0, opacity: 1, duration: 1.1 })
+        .fromTo(q('[data-truck-shadow]'), { scaleX: 0.6, opacity: 0 }, { scaleX: 1, opacity: 1, duration: 1.1 }, 0)
+        .add(() => setMode('surf'), 0.5);
+    };
+
+    ScrollTrigger.create({ trigger: stage, start: 'top 75%', once: true, onEnter: entrance });
+
+    // Pointer tilt on devices with a fine pointer; scroll-driven tilt elsewhere.
+    if (!reduceMotion) {
+      const finePointer = window.matchMedia('(pointer: fine)').matches;
+      if (finePointer) {
+        const rotY = gsap.quickTo(svg, 'rotationY', { duration: 0.6, ease: 'power3.out' });
+        const rotX = gsap.quickTo(svg, 'rotationX', { duration: 0.6, ease: 'power3.out' });
+        const shiftX = gsap.quickTo(svg, 'x', { duration: 0.6, ease: 'power3.out' });
+        stage.addEventListener('pointermove', (event) => {
+          const rect = stage.getBoundingClientRect();
+          const px = (event.clientX - rect.left) / rect.width - 0.5;
+          const py = (event.clientY - rect.top) / rect.height - 0.5;
+          rotY(px * 10);
+          rotX(-py * 6);
+          shiftX(px * 14);
+        });
+        stage.addEventListener('pointerleave', () => {
+          rotY(0);
+          rotX(0);
+          shiftX(0);
+        });
+      } else {
+        gsap.fromTo(
+          svg,
+          { rotationY: -4 },
+          { rotationY: 4, ease: 'none', scrollTrigger: { trigger: stage, start: 'top bottom', end: 'bottom top', scrub: true } },
+        );
+      }
+    }
+  }
+</script>

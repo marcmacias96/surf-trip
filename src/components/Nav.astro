@@ -20,8 +20,14 @@ const links = [
 <a href="#main" class="skip-link">{t.nav.skip}</a>
 
 <header data-nav class="nav fixed inset-x-0 top-0 z-50 border-b border-line text-bone">
-  <nav class="container-x flex h-20 items-center justify-between gap-6" aria-label="Main">
-    <a href="#top" class="font-display text-lg font-extrabold uppercase tracking-[-0.02em]">
+  <nav
+    class="container-x flex min-h-16 items-center justify-between gap-4 pt-[env(safe-area-inset-top)] lg:min-h-20 lg:gap-6"
+    aria-label="Main"
+  >
+    <a
+      href="#top"
+      class="whitespace-nowrap font-display text-sm font-extrabold uppercase tracking-[-0.02em] lg:text-lg"
+    >
       Radical Marino
     </a>
 
@@ -38,7 +44,7 @@ const links = [
     </ul>
 
     <div class="flex items-center gap-4 md:gap-6">
-      <ul class="flex items-center gap-3" aria-label={t.nav.switchLabel}>
+      <ul class="flex items-center gap-4" aria-label={t.nav.switchLabel}>
         {
           (Object.keys(languages) as Lang[]).map((code) => (
             <li>
@@ -53,7 +59,10 @@ const links = [
           ))
         }
       </ul>
-      <a href="#contact" class="btn px-3 py-2 text-xs md:px-5 md:py-3 md:text-sm">{t.nav.cta}</a>
+      <a href="#contact" class="btn whitespace-nowrap px-4 lg:px-5">
+        <span class="lg:hidden">{t.nav.ctaShort}</span>
+        <span class="hidden lg:inline">{t.nav.cta}</span>
+      </a>
     </div>
   </nav>
 </header>

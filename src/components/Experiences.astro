@@ -12,15 +12,27 @@ const slots = ['experience-custom', 'experience-group'];
 
 <section id="experiences" class="border-t-4 border-bone" aria-labelledby="transport-title">
   <div class="grid lg:grid-cols-2">
-    <img
-      data-asset-slot="transport"
-      src={t.transport.image.src}
-      alt={t.transport.image.alt}
-      width={t.transport.image.width}
-      height={t.transport.image.height}
-      loading="lazy"
-      class="block h-full min-h-[320px] w-full object-cover lg:min-h-[480px]"
-    />
+    <picture class="block">
+      <source
+        media="(max-width: 767px)"
+        srcset={t.transport.image.mobile.srcset}
+        sizes={t.transport.image.mobile.sizes}
+        width={t.transport.image.mobile.width}
+        height={t.transport.image.mobile.height}
+      />
+      <img
+        data-asset-slot="transport"
+        src={t.transport.image.desktop.src}
+        srcset={t.transport.image.desktop.srcset}
+        sizes={t.transport.image.desktop.sizes}
+        alt={t.transport.image.desktop.alt}
+        width={t.transport.image.desktop.width}
+        height={t.transport.image.desktop.height}
+        loading="lazy"
+        decoding="async"
+        class="block aspect-[4/5] w-full object-cover lg:aspect-auto lg:h-full lg:min-h-[480px]"
+      />
+    </picture>
     <div class="bg-bone px-[clamp(24px,4vw,64px)] py-16 text-asphalt">
       <p class="mono">{t.transport.label}</p>
       <h2
@@ -58,10 +70,13 @@ const slots = ['experience-custom', 'experience-group'];
             <img
               data-asset-slot={slots[index]}
               src={modality.image.src}
+              srcset={modality.image.srcset}
+              sizes={modality.image.sizes}
               alt={modality.image.alt}
               width={modality.image.width}
               height={modality.image.height}
               loading="lazy"
+              decoding="async"
               class="aspect-[3/2] w-full object-cover"
             />
             <p class="mono mt-6 text-orange">{String(index + 1).padStart(2, '0')}</p>

@@ -48,7 +48,7 @@
   }
 
   .mono {
-    @apply font-mono text-xs uppercase tracking-[0.06em];
+    @apply font-mono text-[13px] uppercase tracking-[0.06em] md:text-xs;
   }
 
   .display {
@@ -78,13 +78,16 @@
     transform: rotate(0) scale(0.98);
   }
 
+  /* Tappable label: 44px hit area from padding + negative margin, so the text keeps its place. */
   .link-underline {
-    @apply relative inline-block font-mono text-xs uppercase tracking-[0.06em];
+    @apply relative -mx-2 inline-flex min-h-11 items-center px-2 font-mono text-[13px] uppercase tracking-[0.06em] md:text-xs;
   }
 
+  /* Sits 2px under the centered line box (half of line-height 1.5 = 0.75em). */
   .link-underline::after {
     content: "";
-    @apply absolute inset-x-0 -bottom-0.5 h-px origin-left bg-current;
+    @apply absolute inset-x-2 h-px origin-left bg-current;
+    top: calc(50% + 0.75em + 2px);
     transform: scaleX(0);
     transition: transform 240ms var(--ease-out-strong);
   }
@@ -96,6 +99,7 @@
   }
 
   .link-underline:focus-visible::after,
+  .link-underline:active::after,
   .link-underline[aria-current]::after {
     transform: scaleX(1);
   }

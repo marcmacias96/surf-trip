@@ -73,11 +73,14 @@ const cell = 'border-b border-dashed border-dash py-5';
               <img
                 data-route-img={stop.id}
                 data-asset-slot={`route-${stop.id}`}
-                src={stop.image}
-                alt={stop.alt}
-                width={stop.width}
-                height={stop.height}
+                src={stop.image.src}
+                srcset={stop.image.srcset}
+                sizes={stop.image.sizes}
+                alt={stop.image.alt}
+                width={stop.image.width}
+                height={stop.image.height}
                 loading="lazy"
+                decoding="async"
                 class:list={['absolute inset-0 h-full w-full object-cover', index === 0 && 'is-active']}
               />
             ))

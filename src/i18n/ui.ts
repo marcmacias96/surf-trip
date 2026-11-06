@@ -2,6 +2,22 @@ export type Lang = 'en' | 'es';
 
 export const languages: Record<Lang, string> = { en: 'EN', es: 'ES' };
 
+export interface ImageSlot {
+  src: string;
+  /** Width-described candidates; `src` stays the JPEG fallback. */
+  srcset: string;
+  sizes: string;
+  alt: string;
+  width: number;
+  height: number;
+}
+
+/** One photo per orientation: `mobile` fills a portrait box, `desktop` a landscape or sticky one. */
+export interface ArtDirectedImage {
+  mobile: ImageSlot;
+  desktop: ImageSlot;
+}
+
 export interface Stop {
   id: string;
   name: string;
@@ -9,13 +25,7 @@ export interface Stop {
   info: string;
   description: string;
   distance: string;
-  image: string;
-  alt: string;
-}
-
-export interface ImageSlot {
-  src: string;
-  alt: string;
+  image: ImageSlot;
 }
 
 interface Modality {
@@ -44,6 +54,7 @@ interface Copy {
     pilot: string;
     contact: string;
     cta: string;
+    ctaShort: string;
     switchLabel: string;
     skip: string;
   };
@@ -56,7 +67,7 @@ interface Copy {
     intro: string;
     cta: string;
     scroll: string;
-    image: ImageSlot;
+    image: ArtDirectedImage;
   };
   strip: string[];
   stats: [Stat, Stat, Stat];
@@ -74,7 +85,7 @@ interface Copy {
     lines: [string, string];
     bullets: string[];
     cta: string;
-    image: ImageSlot;
+    image: ArtDirectedImage;
   };
   experiences: {
     label: string;
@@ -104,20 +115,40 @@ interface Copy {
   footer: { hub: string; smallPrint: string };
 }
 
-const unsplash = (id: string) =>
-  `https://images.unsplash.com/${id}?auto=format&fit=crop&w=1600&q=70`;
+const widths = [640, 1024, 1600];
+
+const unsplash = (id: string) => {
+  const url = (w: number) => `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=70`;
+  return { src: url(1600), srcset: widths.map((w) => `${url(w)} ${w}w`).join(', ') };
+};
+
+// Local photos: `{name}.jpg` is the fallback; `{name}-{w}.webp` variants live in public/images.
+const local = (name: string, ws = widths) => ({
+  src: `/images/${name}.jpg`,
+  srcset: ws.map((w) => `/images/${name}-${w}.webp ${w}w`).join(', '),
+});
+
+const sizes = {
+  hero: '(min-width: 1400px) 1400px, 100vw',
+  transport: '(min-width: 1024px) 50vw, 100vw',
+  route: '(min-width: 1024px) 40vw, 100vw',
+  card: '(min-width: 768px) 50vw, 100vw',
+};
 
 const images = {
-  heroTruck: '/images/truck-ayampe-sunset.jpg',
-  transportTruck: '/images/truck-coast-overlook.jpg',
-  manta: '/images/truck-manta-towers.jpg',
-  santaMarianita: unsplash('photo-1500375592092-40eb2168fd21'),
-  sanMateo: '/images/truck-hill-lighthouse.jpg',
-  puertoCayo: unsplash('photo-1505118380757-91f5f5632de0'),
-  ayampe: unsplash('photo-1509914398892-963f53e6e2f1'),
-  montanita: unsplash('photo-1455729552865-3658a5d39692'),
-  custom: unsplash('photo-1502680390469-be75c86b636f'),
-  group: unsplash('photo-1455264745730-cb3b76250ae8'),
+  heroTruck: { ...local('truck-ayampe-sunset'), sizes: sizes.hero },
+  // Portrait photos for phone-width boxes; only the sizes a phone can need.
+  heroTruckMobile: { ...local('truck-coast-overlook', [640, 1024]), sizes: '100vw' },
+  transportTruck: { ...local('truck-coast-overlook'), sizes: sizes.transport },
+  transportTruckMobile: { ...local('truck-hill-lighthouse', [640, 1024]), sizes: '100vw' },
+  manta: { ...local('truck-manta-towers'), sizes: sizes.route },
+  santaMarianita: { ...unsplash('photo-1500375592092-40eb2168fd21'), sizes: sizes.route },
+  sanMateo: { ...local('truck-hill-lighthouse'), sizes: sizes.route },
+  puertoCayo: { ...unsplash('photo-1505118380757-91f5f5632de0'), sizes: sizes.route },
+  ayampe: { ...unsplash('photo-1509914398892-963f53e6e2f1'), sizes: sizes.route },
+  montanita: { ...unsplash('photo-1455729552865-3658a5d39692'), sizes: sizes.route },
+  custom: { ...unsplash('photo-1502680390469-be75c86b636f'), sizes: sizes.card },
+  group: { ...unsplash('photo-1455264745730-cb3b76250ae8'), sizes: sizes.card },
 };
 
 const stripStops = ['Manta', 'Santa Marianita', 'San Mateo', 'Puerto Cayo', 'Ayampe', 'Montañita', 'Olón'];
@@ -136,6 +167,7 @@ export const ui: Record<Lang, Copy> = {
       pilot: 'Pilot',
       contact: 'Contact',
       cta: 'Get in the van',
+      ctaShort: 'Book',
       switchLabel: 'Language',
       skip: 'Skip to content',
     },
@@ -150,10 +182,18 @@ export const ui: Record<Lang, Copy> = {
       cta: 'Get in the van',
       scroll: 'Scroll',
       image: {
-        src: images.heroTruck,
-        alt: 'Radical Marino double-cab truck with board rack, side profile on the beach at sunset in Ayampe',
-        width: 1920,
-        height: 1279,
+        mobile: {
+          ...images.heroTruckMobile,
+          alt: 'Radical Marino double-cab truck with board rack parked at a coastal overlook',
+          width: 1080,
+          height: 1920,
+        },
+        desktop: {
+          ...images.heroTruck,
+          alt: 'Radical Marino double-cab truck with board rack, side profile on the beach at sunset in Ayampe',
+          width: 1920,
+          height: 1279,
+        },
       },
     },
     strip: stripStops,
@@ -183,10 +223,17 @@ export const ui: Record<Lang, Copy> = {
           description:
             'The port city where every trip begins. Airport, boards, vehicles and the team meet here before heading down the coast.',
           distance: '0 km',
-          image: images.manta,
-          alt: 'Radical Marino double-cab truck with board rack in front of the Manta skyline',
-          width: 1920,
-          height: 1080,
+          image: {
+
+            ...images.manta,
+
+            alt: 'Radical Marino double-cab truck with board rack in front of the Manta skyline',
+
+            width: 1920,
+
+            height: 1080,
+
+          },
         },
         {
           id: 'santa-marianita',
@@ -196,10 +243,17 @@ export const ui: Record<Lang, Copy> = {
           description:
             'A long open beach known for wind and water sports. A first session to settle in and read the conditions.',
           distance: '20 km',
-          image: images.santaMarianita,
-          alt: 'Ocean wave breaking under a clear sky',
-          width: 1600,
-          height: 1067,
+          image: {
+
+            ...images.santaMarianita,
+
+            alt: 'Ocean wave breaking under a clear sky',
+
+            width: 1600,
+
+            height: 1067,
+
+          },
         },
         {
           id: 'san-mateo',
@@ -209,10 +263,17 @@ export const ui: Record<Lang, Copy> = {
           description:
             'A fishing village with a long surf history. Point break, local lineup and a community that lives from the sea.',
           distance: '12 km',
-          image: images.sanMateo,
-          alt: 'Radical Marino double-cab truck with board rack on a hill by the San Mateo lighthouse',
-          width: 1080,
-          height: 1920,
+          image: {
+
+            ...images.sanMateo,
+
+            alt: 'Radical Marino double-cab truck with board rack on a hill by the San Mateo lighthouse',
+
+            width: 1080,
+
+            height: 1920,
+
+          },
         },
         {
           id: 'puerto-cayo',
@@ -222,10 +283,17 @@ export const ui: Record<Lang, Copy> = {
           description:
             'Slow mornings and empty beaches. Space to rest, surf uncrowded waves and watch the coast change.',
           distance: '70 km',
-          image: images.puertoCayo,
-          alt: 'Clear blue water along a calm shoreline',
-          width: 1600,
-          height: 1067,
+          image: {
+
+            ...images.puertoCayo,
+
+            alt: 'Clear blue water along a calm shoreline',
+
+            width: 1600,
+
+            height: 1067,
+
+          },
         },
         {
           id: 'ayampe',
@@ -235,10 +303,17 @@ export const ui: Record<Lang, Copy> = {
           description:
             'A small town surrounded by forest and a consistent beach break. Relaxed surf culture and a close community.',
           distance: '110 km',
-          image: images.ayampe,
-          alt: 'Surfer walking with a board toward the ocean',
-          width: 1600,
-          height: 1067,
+          image: {
+
+            ...images.ayampe,
+
+            alt: 'Surfer walking with a board toward the ocean',
+
+            width: 1600,
+
+            height: 1067,
+
+          },
         },
         {
           id: 'montanita-olon',
@@ -248,10 +323,17 @@ export const ui: Record<Lang, Copy> = {
           description:
             'The best-known surf towns in Ecuador. A lively point break in Montañita and a long, open beach in Olón to close the trip.',
           distance: '140–145 km',
-          image: images.montanita,
-          alt: 'Surfers in the water at a busy beach town',
-          width: 1600,
-          height: 1067,
+          image: {
+
+            ...images.montanita,
+
+            alt: 'Surfers in the water at a busy beach town',
+
+            width: 1600,
+
+            height: 1067,
+
+          },
         },
       ],
     },
@@ -266,10 +348,18 @@ export const ui: Record<Lang, Copy> = {
       ],
       cta: 'Plan your trip',
       image: {
-        src: images.transportTruck,
-        alt: 'Radical Marino double-cab truck with board rack parked at a coastal overlook',
-        width: 1080,
-        height: 1920,
+        mobile: {
+          ...images.transportTruckMobile,
+          alt: 'Radical Marino double-cab truck with board rack on a hill by the San Mateo lighthouse',
+          width: 1080,
+          height: 1920,
+        },
+        desktop: {
+          ...images.transportTruck,
+          alt: 'Radical Marino double-cab truck with board rack parked at a coastal overlook',
+          width: 1080,
+          height: 1920,
+        },
       },
     },
     experiences: {
@@ -284,7 +374,7 @@ export const ui: Record<Lang, Copy> = {
           description:
             'For individuals, couples and small groups. Dates, stops and pace shaped around your level and your time.',
           image: {
-            src: images.custom,
+            ...images.custom,
             alt: 'Surfboards lined up on the sand',
             width: 1600,
             height: 1067,
@@ -295,7 +385,7 @@ export const ui: Record<Lang, Copy> = {
           description:
             'Pre-organized itineraries with fixed dates along the full route. Join a small crew and share the trip.',
           image: {
-            src: images.group,
+            ...images.group,
             alt: 'Group of surfers watching the waves from the beach',
             width: 1600,
             height: 1067,
@@ -397,6 +487,7 @@ export const ui: Record<Lang, Copy> = {
       pilot: 'Piloto',
       contact: 'Contacto',
       cta: 'Súbete a la van',
+      ctaShort: 'Reservar',
       switchLabel: 'Idioma',
       skip: 'Ir al contenido',
     },
@@ -411,10 +502,18 @@ export const ui: Record<Lang, Copy> = {
       cta: 'Súbete a la van',
       scroll: 'Desplázate',
       image: {
-        src: images.heroTruck,
-        alt: 'Camioneta doble cabina de Radical Marino con parrilla para tablas, de perfil en la playa de Ayampe al atardecer',
-        width: 1920,
-        height: 1279,
+        mobile: {
+          ...images.heroTruckMobile,
+          alt: 'Camioneta doble cabina de Radical Marino con parrilla para tablas en un mirador de la costa',
+          width: 1080,
+          height: 1920,
+        },
+        desktop: {
+          ...images.heroTruck,
+          alt: 'Camioneta doble cabina de Radical Marino con parrilla para tablas, de perfil en la playa de Ayampe al atardecer',
+          width: 1920,
+          height: 1279,
+        },
       },
     },
     strip: stripStops,
@@ -444,10 +543,17 @@ export const ui: Record<Lang, Copy> = {
           description:
             'La ciudad portuaria donde empieza cada viaje. Aeropuerto, tablas, vehículos y equipo se reúnen aquí antes de bajar por la costa.',
           distance: '0 km',
-          image: images.manta,
-          alt: 'Camioneta doble cabina de Radical Marino con parrilla para tablas frente a los edificios de Manta',
-          width: 1920,
-          height: 1080,
+          image: {
+
+            ...images.manta,
+
+            alt: 'Camioneta doble cabina de Radical Marino con parrilla para tablas frente a los edificios de Manta',
+
+            width: 1920,
+
+            height: 1080,
+
+          },
         },
         {
           id: 'santa-marianita',
@@ -457,10 +563,17 @@ export const ui: Record<Lang, Copy> = {
           description:
             'Una playa larga y abierta conocida por el viento y los deportes acuáticos. Una primera sesión para adaptarse y leer las condiciones.',
           distance: '20 km',
-          image: images.santaMarianita,
-          alt: 'Ola rompiendo bajo un cielo despejado',
-          width: 1600,
-          height: 1067,
+          image: {
+
+            ...images.santaMarianita,
+
+            alt: 'Ola rompiendo bajo un cielo despejado',
+
+            width: 1600,
+
+            height: 1067,
+
+          },
         },
         {
           id: 'san-mateo',
@@ -470,10 +583,17 @@ export const ui: Record<Lang, Copy> = {
           description:
             'Un pueblo pesquero con una larga historia de surf. Point break, lineup local y una comunidad que vive del mar.',
           distance: '12 km',
-          image: images.sanMateo,
-          alt: 'Camioneta doble cabina de Radical Marino con parrilla para tablas en una colina junto al faro de San Mateo',
-          width: 1080,
-          height: 1920,
+          image: {
+
+            ...images.sanMateo,
+
+            alt: 'Camioneta doble cabina de Radical Marino con parrilla para tablas en una colina junto al faro de San Mateo',
+
+            width: 1080,
+
+            height: 1920,
+
+          },
         },
         {
           id: 'puerto-cayo',
@@ -483,10 +603,17 @@ export const ui: Record<Lang, Copy> = {
           description:
             'Mañanas lentas y playas vacías. Espacio para descansar, surfear olas sin gente y ver cómo cambia la costa.',
           distance: '70 km',
-          image: images.puertoCayo,
-          alt: 'Agua azul y clara junto a una orilla tranquila',
-          width: 1600,
-          height: 1067,
+          image: {
+
+            ...images.puertoCayo,
+
+            alt: 'Agua azul y clara junto a una orilla tranquila',
+
+            width: 1600,
+
+            height: 1067,
+
+          },
         },
         {
           id: 'ayampe',
@@ -496,10 +623,17 @@ export const ui: Record<Lang, Copy> = {
           description:
             'Un pueblo pequeño rodeado de bosque y un beach break constante. Cultura surf relajada y una comunidad cercana.',
           distance: '110 km',
-          image: images.ayampe,
-          alt: 'Surfista caminando con su tabla hacia el mar',
-          width: 1600,
-          height: 1067,
+          image: {
+
+            ...images.ayampe,
+
+            alt: 'Surfista caminando con su tabla hacia el mar',
+
+            width: 1600,
+
+            height: 1067,
+
+          },
         },
         {
           id: 'montanita-olon',
@@ -509,10 +643,17 @@ export const ui: Record<Lang, Copy> = {
           description:
             'Los pueblos surfistas más conocidos de Ecuador. Un point break animado en Montañita y una playa larga y abierta en Olón para cerrar el viaje.',
           distance: '140–145 km',
-          image: images.montanita,
-          alt: 'Surfistas en el agua en un pueblo de playa concurrido',
-          width: 1600,
-          height: 1067,
+          image: {
+
+            ...images.montanita,
+
+            alt: 'Surfistas en el agua en un pueblo de playa concurrido',
+
+            width: 1600,
+
+            height: 1067,
+
+          },
         },
       ],
     },
@@ -527,10 +668,18 @@ export const ui: Record<Lang, Copy> = {
       ],
       cta: 'Planifica tu viaje',
       image: {
-        src: images.transportTruck,
-        alt: 'Camioneta doble cabina de Radical Marino con parrilla para tablas en un mirador de la costa',
-        width: 1080,
-        height: 1920,
+        mobile: {
+          ...images.transportTruckMobile,
+          alt: 'Camioneta doble cabina de Radical Marino con parrilla para tablas en una colina junto al faro de San Mateo',
+          width: 1080,
+          height: 1920,
+        },
+        desktop: {
+          ...images.transportTruck,
+          alt: 'Camioneta doble cabina de Radical Marino con parrilla para tablas en un mirador de la costa',
+          width: 1080,
+          height: 1920,
+        },
       },
     },
     experiences: {
@@ -545,7 +694,7 @@ export const ui: Record<Lang, Copy> = {
           description:
             'Para personas, parejas y grupos pequeños. Fechas, paradas y ritmo adaptados a tu nivel y a tu tiempo.',
           image: {
-            src: images.custom,
+            ...images.custom,
             alt: 'Tablas de surf alineadas sobre la arena',
             width: 1600,
             height: 1067,
@@ -556,7 +705,7 @@ export const ui: Record<Lang, Copy> = {
           description:
             'Itinerarios preorganizados con fechas fijas a lo largo de toda la ruta. Súmate a un grupo pequeño y comparte el viaje.',
           image: {
-            src: images.group,
+            ...images.group,
             alt: 'Grupo de surfistas observando las olas desde la playa',
             width: 1600,
             height: 1067,

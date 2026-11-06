@@ -17,7 +17,7 @@ const fontsHref =
 <html lang={lang}>
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{t.meta.title}</title>
     <meta name="description" content={t.meta.description} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -26,6 +26,7 @@ const fontsHref =
     <link rel="alternate" hreflang="x-default" href={new URL(getRelativeLocaleUrl('en'), Astro.url)} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" as="style" href={fontsHref} />
     <link rel="stylesheet" href={fontsHref} />
     <script is:inline>
       document.documentElement.classList.add('js');

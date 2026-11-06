@@ -17,7 +17,7 @@ const stickerClasses = [
 <section id="top" data-hero class="overflow-hidden pt-32 lg:pt-40" aria-labelledby="hero-title">
   <div class="container-x">
     <p class="mono mb-5 text-orange">{t.hero.label}</p>
-    <h1 id="hero-title" class="display text-[clamp(4.2rem,13.5vw,15rem)] leading-[0.82]">
+    <h1 id="hero-title" class="display text-[clamp(2.75rem,12vw,15rem)] leading-[0.82]">
       <span class="block">
         <span class="inline-block overflow-hidden align-top">
           <span data-line class="ghost inline-block text-bone">{t.hero.title.ghost}</span>
@@ -47,18 +47,30 @@ const stickerClasses = [
     </ul>
 
     <div data-hero-pic class="relative mt-10">
-      <div class="h-[68vh] min-h-[420px] overflow-hidden">
-        <img
-          data-hero-img
-          data-asset-slot="hero"
-          src={t.hero.image.src}
-          alt={t.hero.image.alt}
-          width={t.hero.image.width}
-          height={t.hero.image.height}
-          loading="eager"
-          fetchpriority="high"
-          class="relative top-[-7.5%] block h-[115%] w-full object-cover"
-        />
+      <!-- Portrait photo in a 4/5 box on phones, the landscape sunset in a 3/2 box from md. -->
+      <div class="aspect-[4/5] overflow-hidden md:aspect-[3/2] md:max-h-[68vh]">
+        <picture>
+          <source
+            media="(max-width: 767px)"
+            srcset={t.hero.image.mobile.srcset}
+            sizes={t.hero.image.mobile.sizes}
+            width={t.hero.image.mobile.width}
+            height={t.hero.image.mobile.height}
+          />
+          <img
+            data-hero-img
+            data-asset-slot="hero"
+            src={t.hero.image.desktop.src}
+            srcset={t.hero.image.desktop.srcset}
+            sizes={t.hero.image.desktop.sizes}
+            alt={t.hero.image.desktop.alt}
+            width={t.hero.image.desktop.width}
+            height={t.hero.image.desktop.height}
+            loading="eager"
+            fetchpriority="high"
+            class="relative top-[-7.5%] block h-[115%] w-full object-cover"
+          />
+        </picture>
       </div>
       {
         t.hero.stickers.map((text, index) => (
